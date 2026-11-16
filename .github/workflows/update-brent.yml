@@ -23,9 +23,16 @@ jobs:
           EIA_API_KEY: ${{ secrets.EIA_API_KEY }}
         run: python scripts/fetch_brent.py
 
+      - name: Write AI market insight
+        continue-on-error: true   # if this fails, the Brent update is still saved
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python scripts/write_insight.py
+
       - name: Save the new data
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/brent.json
-          git diff --staged --quiet || (git commit -m "Update Brent price data" && git push)
+          git add data/insight.json 2>/dev/null || true
+          git diff --staged --quiet || (git commit -m "Update Brent price and market insight" && git push)
