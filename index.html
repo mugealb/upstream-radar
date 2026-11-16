@@ -283,7 +283,7 @@ footer a{color:var(--blue)}
           <button data-country="egypt" aria-pressed="false"><svg class="flag" viewBox="0 0 24 16" aria-hidden="true"><rect width="24" height="16" fill="#000"/><rect width="24" height="10.67" fill="#fff"/><rect width="24" height="5.33" fill="#ce1126"/><circle cx="12" cy="8" r="1.6" fill="#c09300"/></svg> Egypt</button>
         </div>
         <dl class="kv" id="kv"></dl>
-        <p class="verify">Indicative ranges for the prototype. Each term will link to the law or official model contract it comes from, with the date it was last checked.</p>
+        <p class="verify">Terms differ by block and are negotiated in each contract. Tap ↗ to read the source behind each line. Last checked <span id="fiscalChecked">16 Nov 2026</span>.</p>
       </section>
 
       <div class="stack">
@@ -311,16 +311,10 @@ footer a{color:var(--blue)}
           <div class="card-h"><h2 id="fiH"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3v18M5 7h14M5 7l-3 7h6zM19 7l-3 7h6z"/></svg>Fiscal terms explorer</h2></div>
           <div class="tbl"><table>
             <thead><tr><th>Key term</th><th>Libya</th><th>Egypt</th></tr></thead>
-            <tbody>
-              <tr><td class="k">Contract type</td><td>EPSA</td><td>Concession / PSA</td></tr>
-              <tr><td class="k">Royalty</td><td>0–12%</td><td>~10–20%</td></tr>
-              <tr><td class="k">Petroleum tax</td><td>~20%</td><td>~40% (concession)</td></tr>
-              <tr><td class="k">Cost recovery</td><td>Yes, capped</td><td>Yes (PSA)</td></tr>
-              <tr><td class="k">NOC participation</td><td>0–25%</td><td>Usually 0–50%</td></tr>
-            </tbody>
+            <tbody id="fiscalBody"></tbody>
           </table></div>
-          <span class="src">Indicative · to be verified against official sources</span>
-          <a class="more" href="#fiscal">View detailed comparison ›</a>
+          <span class="src">Summary of public legal and industry sources. Full contract terms are often not published.</span>
+          <a class="more" href="#country">See each country in detail ›</a>
         </section>
 
         <section class="card help" aria-labelledby="hlH">
@@ -400,19 +394,23 @@ footer a{color:var(--blue)}
     drawPins();
   });
 
-  const COUNTRY={
-    libya:[["Contract regime","EPSA (Exploration & Production Sharing Agreement)"],["Royalty","Typically 0–12%, field and terms specific"],["Petroleum tax","~20% plus applicable levies"],["Cost recovery","Yes, subject to a cap (e.g. 50–70%)"],["Profit split","Sliding scale (e.g. contractor 20–49%)"],["NOC participation","Commonly 0–25%, negotiable"],["Licensing authority","National Oil Corporation (NOC)"]],
-    egypt:[["Contract regime","Concession agreements and PSAs"],["Royalty","~10–20%, set per agreement"],["Petroleum tax","~40% under concessions"],["Cost recovery","Yes under PSAs, capped per agreement"],["Profit split","Negotiated per bid round"],["NOC participation","Usually 0–50%"],["Licensing authority","EGPC (oil), EGAS (gas), Ganope (Red Sea)"]]
-  };
+  let FISCAL=[];
   const kv=document.getElementById('kv');
   function setCountry(c){
-    kv.innerHTML=COUNTRY[c].map(r=>'<div><dt>'+r[0]+'</dt><dd>'+r[1]+'</dd></div>').join('');
+    kv.innerHTML=FISCAL.map(r=>'<div><dt>'+esc(r.term)+'</dt><dd>'+esc(r[c])+link(r[c+'_source'])+'</dd></div>').join('')||'<div><dt>Loading terms…</dt><dd></dd></div>';
     document.querySelectorAll('[data-country]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.country===c?'true':'false'));
     document.querySelectorAll('.libya,.egypt').forEach(p=>p.classList.toggle('on',p.classList.contains(c)));
+    CUR=c;
   }
+  let CUR='libya';
   document.querySelectorAll('[data-country]').forEach(b=>b.addEventListener('click',()=>{setCountry(b.dataset.country);if(b.classList.contains('cbtn'))document.getElementById('country').scrollIntoView({behavior:'smooth',block:'start'})}));
   document.querySelectorAll('.libya,.egypt').forEach(p=>p.addEventListener('click',()=>setCountry(p.classList.contains('libya')?'libya':'egypt')));
   setCountry('libya');
+  getCSV('fiscal').then(rows=>{
+    FISCAL=rows;setCountry(CUR);
+    const short=['Contract type','Royalty','Income tax','Cost recovery','State participation'];
+    document.getElementById('fiscalBody').innerHTML=rows.filter(r=>short.includes(r.term)).map(r=>'<tr><td class="k">'+esc(r.term)+'</td><td>'+esc(r.libya_short||r.libya)+link(r.libya_source)+'</td><td>'+esc(r.egypt_short||r.egypt)+link(r.egypt_source)+'</td></tr>').join('');
+  });
 
   // Brent: real EIA data from data/brent.json (updated daily by GitHub Actions); sample series if unavailable
   const RANGES={"1W":[5,"vs. 1 week ago"],"1M":[22,"vs. 1 month ago"],"3M":[65,"vs. 3 months ago"],"6M":[130,"vs. 6 months ago"],"1Y":[260,"vs. 1 year ago"]};
