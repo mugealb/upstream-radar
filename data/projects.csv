@@ -1,0 +1,6 @@
+project,country,operator,status,notes,lat,lon,source_url,verified
+Denise West,Egypt,Eni,Pre-FID,About 2 tcf gas discovery; FID being prepared,31.7,31.9,https://www.oedigital.com/amp/news/542507-energean-enters-exclusive-talks-for-bp-s-egypt-oil-and-gas-assets,yes
+Zohr,Egypt,Eni (Petrobel),Producing,Largest gas field in the Mediterranean,32.2,32.1,,no
+West Nile Delta,Egypt,BP,Producing,Offshore gas; stake in sale talks,31.8,30.3,,no
+Bahr Essalam,Libya,Mellitah Oil & Gas (NOC/Eni),Producing,Offshore gas,33.4,12.4,,no
+Structures A & E,Libya,Mellitah Oil & Gas (NOC/Eni),Development,Offshore gas development,33.2,13.0,,no
