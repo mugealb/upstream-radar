@@ -436,7 +436,7 @@ footer a{color:var(--blue)}
     const e=document.getElementById('chg');e.className='chg num '+(pct>=0?'up':'down');e.textContent=(pct>=0?'▲ +':'▼ ')+pct.toFixed(2)+'%';
     document.getElementById('chgLbl').textContent=RANGES[k][1];
   }
-  function render(){
+  let render=function(){
     const last=PTS[PTS.length-1],prev=PTS[PTS.length-2],dd=(last.value/prev.value-1)*100;
     document.getElementById('px').textContent=usd(last.value);
     document.getElementById('brentSrc').textContent=LIVE
@@ -455,6 +455,14 @@ footer a{color:var(--blue)}
   fetch('data/brent.json',{cache:'no-store'}).then(r=>r.ok?r.json():Promise.reject(r.status)).then(j=>{
     const s=(j.series||[]).filter(p=>p&&p.date&&isFinite(p.value)).map(p=>({date:p.date,value:+p.value}));
     if(s.length>10){PTS=s;LIVE=true;render()}
+  }).catch(()=>{});
+  // AI insight written daily by Claude (data/insight.json); numbers are checked in Python before it is saved
+  fetch('data/insight.json',{cache:'no-store'}).then(r=>r.ok?r.json():Promise.reject(r.status)).then(j=>{
+    if(!j||!j.text)return;
+    const show=()=>{document.getElementById('insTag').textContent='AI summary';
+      document.getElementById('insText').textContent=j.text;
+      document.getElementById('insNote').textContent='Written by Claude from EIA data and the updates on this page (data to '+fmtD(j.as_of)+' '+String(j.as_of).slice(0,4)+'). Every number was checked against the source data before publishing.'};
+    show();const _r=render;render=function(){_r();show()};
   }).catch(()=>{});
 
   document.getElementById('fb').addEventListener('submit',e=>{e.preventDefault();document.getElementById('thanks').hidden=false;document.getElementById('fbText').value=''});
