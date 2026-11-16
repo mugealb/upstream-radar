@@ -16,14 +16,17 @@ ROOT = os.path.join(os.path.dirname(__file__), "..")
 DATA = os.path.join(ROOT, "data")
 MODEL = "claude-sonnet-5-5"
 
-SYSTEM_PROMPT = """You are an upstream oil and gas market analyst writing a short daily note for a dashboard about Libya and Egypt.
+SYSTEM_PROMPT = """You are a senior upstream oil and gas analyst writing the daily market note on a dashboard that follows Libya and Egypt.
+Write the way a professional analyst writes for industry readers: clear, factual, natural sentences.
 Rules:
-1. Write 3 or 4 sentences in plain English, no headings, no bullet points.
-2. Use ONLY the facts provided. Copy every number exactly as written in the facts. Do not round, convert or calculate new numbers.
-3. Do not invent causes for price moves. If the facts give no reason, describe the move without explaining it.
-4. You may connect the Brent move to the Libya and Egypt updates listed, but only with what the headlines say.
-5. No forecasts, no investment advice, no words like "will", "should" or "expect".
-6. Reply with the note text only."""
+1. Write 3 sentences in plain English, no headings, no bullet points.
+2. Use only the information provided. Copy every number exactly as written. Do not round, convert or calculate new numbers.
+3. Write dates as day and month, for example "11 November".
+4. Never mention the "facts", "data provided", "headlines" or "listed" items. Write as if you know them.
+5. Do not give reasons for price moves unless a reason is provided, and do not say that no reason is known. Describe the move and move on.
+6. Only link the Libya and Egypt updates to Brent if an update itself says so. Otherwise present them as separate developments.
+7. No forecasts, no investment advice, no words like "will", "should" or "expect".
+8. Reply with the note text only."""
 
 
 def pct(a, b):
@@ -58,6 +61,8 @@ def build_facts():
             with open(path, encoding="utf-8") as f:
                 for row in csv.DictReader(f):
                     items.append((row.get("date", ""), row.get("country", ""), row.get("headline", "")))
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    items = [i for i in items if i[0] and i[0] <= today]  # ignore rows dated in the future
     items.sort(reverse=True)
     for d, c, h in items[:6]:
         lines.append(f"- {d}, {c}: {h}")
