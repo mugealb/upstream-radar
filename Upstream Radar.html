@@ -1,0 +1,431 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Upstream Radar</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Upstream Radar: MENA upstream oil and gas intelligence for Libya and Egypt. Brent, licensing rounds, fiscal terms, M&A and projects from public sources.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@500;600;700&display=swap">
+<style>
+/* Layout: dark radar band (brief + live map) on top, then a three-column intelligence grid that stacks on phones. */
+:root{
+  --bg:#f3f5f9; --surface:#ffffff; --surface-2:#f6f8fb; --line:#e1e6ef;
+  --fg:#0d1830; --muted:#55627a; --faint:#8592a8;
+  --navy:#0b1730; --navy-2:#13254a; --navy-line:#24375e; --on-navy:#e8eefb; --on-navy-muted:#9fb0cf;
+  --accent:#e0701f; --accent-soft:#fff1e5; --accent-ink:#a94d0c;
+  --scan:#4fd1c5;
+  --up:#178a4c; --up-soft:#e5f6ec; --down:#c23b2a; --down-soft:#fdecea;
+  --blue:#2754c5; --blue-soft:#e9effc; --violet:#6d4bc4; --violet-soft:#f0ebfc;
+  --libya:#e0701f; --egypt:#3d7be0;
+  --font-display:"Space Grotesk","Segoe UI",system-ui,sans-serif;
+  --font-body:Inter,"Segoe UI",system-ui,sans-serif;
+  --font-data:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0a1122; --surface:#111b31; --surface-2:#16223b; --line:#233251;
+  --fg:#e6ecf7; --muted:#a3b0c8; --faint:#73819c;
+  --navy:#060d1d; --navy-2:#0e1a35; --navy-line:#1f3157;
+  --accent:#f0893d; --accent-soft:#3a2312; --accent-ink:#ffb27a;
+  --up:#4cc985; --up-soft:#12301f; --down:#f0776a; --down-soft:#3a1814;
+  --blue:#7ea3f5; --blue-soft:#17264a; --violet:#b39af3; --violet-soft:#251c45;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0a1122; --surface:#111b31; --surface-2:#16223b; --line:#233251;
+  --fg:#e6ecf7; --muted:#a3b0c8; --faint:#73819c;
+  --navy:#060d1d; --navy-2:#0e1a35; --navy-line:#1f3157;
+  --accent:#f0893d; --accent-soft:#3a2312; --accent-ink:#ffb27a;
+  --up:#4cc985; --up-soft:#12301f; --down:#f0776a; --down-soft:#3a1814;
+  --blue:#7ea3f5; --blue-soft:#17264a; --violet:#b39af3; --violet-soft:#251c45;
+  color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:15px;line-height:1.5;margin:0}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--navy)}
+h1,h2,h3{font-family:var(--font-display);margin:0;text-wrap:balance;letter-spacing:-.01em}
+a{color:inherit}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+.wrap{max-width:1360px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.num{font-family:var(--font-data);font-variant-numeric:tabular-nums}
+.eyebrow{font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--faint)}
+
+/* header */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--navy);color:var(--on-navy);border-bottom:1px solid var(--navy-line)}
+.top .wrap{display:flex;align-items:center;gap:20px;padding-block:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none}
+.brand b{font-family:var(--font-display);font-size:19px;display:block;line-height:1.1}
+.brand small{display:block;color:var(--on-navy-muted);font-size:12px}
+.nav{display:flex;gap:4px;flex-wrap:wrap;margin-left:auto}
+.nav a{color:var(--on-navy-muted);text-decoration:none;font-size:13.5px;font-weight:500;padding:8px 11px;border-radius:7px}
+.nav a:hover,.nav a[aria-current]{color:var(--on-navy);background:var(--navy-2)}
+.tag{font-size:11px;font-weight:600;padding:3px 9px;border-radius:99px;border:1px solid var(--navy-line);color:var(--on-navy-muted);white-space:nowrap}
+.bell{position:relative;width:40px;height:40px;border-radius:8px;border:1px solid var(--navy-line);background:var(--navy-2);color:var(--on-navy);display:grid;place-items:center}
+.bell i{position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;border-radius:9px;background:var(--accent);color:#fff;font-style:normal;font-size:11px;font-weight:700;line-height:18px;text-align:center}
+
+/* radar band */
+.band{background:var(--navy);color:var(--on-navy);border-bottom:1px solid var(--navy-line)}
+.band .wrap{display:grid;grid-template-columns:minmax(0,400px) minmax(0,1fr);gap:28px;padding-block:32px 36px}
+.brief{display:flex;flex-direction:column;gap:20px}
+.brief h1{font-size:clamp(30px,3.6vw,44px);line-height:1.05}
+.brief h1 span{color:var(--accent)}
+.brief p{margin:0;color:var(--on-navy-muted);max-width:44ch}
+.cbtns{display:flex;gap:10px;flex-wrap:wrap}
+.cbtn{display:flex;align-items:center;gap:10px;min-height:44px;padding:0 16px;border-radius:8px;border:1px solid var(--navy-line);background:var(--navy-2);color:var(--on-navy);font-weight:600}
+.cbtn:hover{border-color:var(--on-navy-muted)}
+.cbtn[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.flag{width:22px;height:15px;border-radius:2px;flex:none;display:block}
+.news{border:1px solid var(--navy-line);border-radius:var(--r);background:var(--navy-2);padding:16px}
+.news h2{font-size:15px;display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.news ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.news li{display:grid;grid-template-columns:1fr auto;gap:12px;padding:9px 0;border-top:1px solid var(--navy-line);font-size:13.5px}
+.news li:first-child{border-top:0}
+.news time{color:var(--on-navy-muted);font-size:12px;white-space:nowrap}
+
+.radar{position:relative;align-self:start;border:1px solid var(--navy-line);border-radius:12px;overflow:hidden;background:#06101f;display:flex;flex-direction:column}
+.rfoot{display:flex;gap:12px;align-items:stretch;justify-content:space-between;flex-wrap:wrap;padding:12px;border-top:1px solid var(--navy-line);background:var(--navy-2)}
+.radar svg.map{display:block;width:100%;height:auto}
+.land{fill:#1a2c4c;stroke:#34507f;stroke-width:.7}
+.libya{fill:#2c2420;stroke:#e0701f;stroke-width:1.4;cursor:pointer}
+.egypt{fill:#1b2f55;stroke:#3d7be0;stroke-width:1.4;cursor:pointer}
+.libya:hover,.libya.on{fill:#46301f}.egypt:hover,.egypt.on{fill:#203b6c}
+.egypt{fill:#182a4a}
+.grat{fill:none;stroke:#132748;stroke-width:.6}
+.clabel{font-family:var(--font-display);font-size:20px;font-weight:700;letter-spacing:.14em;fill:#f3f6fc;opacity:.85;pointer-events:none}
+.sea{font-family:var(--font-data);font-size:11px;letter-spacing:.3em;fill:#3e5a87;pointer-events:none}
+.sweep{position:absolute;left:50%;top:48%;width:150%;aspect-ratio:1;translate:-50% -50%;border-radius:50%;
+  background:conic-gradient(from 0deg,rgba(79,209,197,.0) 0deg,rgba(79,209,197,.0) 300deg,rgba(79,209,197,.20) 358deg,rgba(79,209,197,.0) 360deg);
+  animation:spin 6s linear infinite;pointer-events:none;mix-blend-mode:screen}
+.rings{position:absolute;inset:0;pointer-events:none}
+@keyframes spin{to{rotate:360deg}}
+.pin{position:absolute;translate:-50% -50%;width:30px;height:30px;border:0;background:none;padding:0;display:grid;place-items:center}
+.pin::before{content:"";width:11px;height:11px;border-radius:50%;background:var(--c);box-shadow:0 0 0 2px #081428,0 0 12px var(--c)}
+.pin::after{content:"";position:absolute;width:11px;height:11px;border-radius:50%;border:2px solid var(--c);animation:ping 2.4s ease-out infinite;animation-delay:var(--d,0s)}
+.pin[aria-pressed="true"]::before{width:15px;height:15px;box-shadow:0 0 0 3px #fff,0 0 16px var(--c)}
+@keyframes ping{from{transform:scale(1);opacity:.9}to{transform:scale(3.4);opacity:0}}
+.hud{position:absolute;top:12px;left:12px;right:12px;display:flex;justify-content:space-between;gap:8px;pointer-events:none;font-family:var(--font-data);font-size:11px;color:#7fa2d6;letter-spacing:.06em}
+.legend{display:flex;flex-direction:column;justify-content:center;gap:8px;padding:4px 6px;font-size:12px;color:var(--on-navy-muted)}
+.legend span{display:flex;align-items:center;gap:6px}
+.legend i{width:9px;height:9px;border-radius:50%;background:var(--c)}
+.card-pop{flex:1 1 300px;max-width:420px;background:var(--navy);border:1px solid var(--navy-line);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+.card-pop b{font-family:var(--font-display);font-size:15px}
+.card-pop .meta{font-size:12px;color:var(--on-navy-muted)}
+.card-pop .row{display:flex;justify-content:space-between;gap:8px;font-size:12.5px;border-top:1px solid var(--navy-line);padding-top:6px}
+
+/* grid */
+main .wrap{display:flex;flex-direction:column;gap:20px;padding-block:24px 40px}
+.row{display:grid;gap:20px}
+.r1{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr) minmax(0,1fr)}
+.r2{grid-template-columns:minmax(0,.9fr) minmax(0,1.25fr) minmax(0,1fr);align-items:start}
+.stack{display:flex;flex-direction:column;gap:20px;min-width:0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.card-h{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.card-h h2{font-size:17px;display:flex;align-items:center;gap:9px}
+.card-h h2 svg{color:var(--accent);flex:none}
+.more{font-size:13px;font-weight:600;color:var(--blue);text-decoration:none}
+.more:hover{text-decoration:underline}
+.seg{display:flex;background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:2px}
+.seg button{border:0;background:none;color:var(--muted);font-size:12px;font-weight:600;padding:5px 9px;border-radius:6px;min-width:34px}
+.seg button[aria-pressed="true"]{background:var(--navy);color:#fff}
+.price{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.price .big{font-family:var(--font-display);font-size:42px;font-weight:700;letter-spacing:-.02em;line-height:1}
+.price .unit{color:var(--muted);font-size:15px}
+.chg{font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:99px}
+.chg.up{color:var(--up);background:var(--up-soft)}.chg.down{color:var(--down);background:var(--down-soft)}
+.chart{width:100%;height:120px;display:block}
+.chart .ax{font-family:var(--font-data);font-size:10px;fill:var(--faint)}
+.src{font-size:12px;color:var(--faint)}
+.insight{font-size:14.5px;line-height:1.6;margin:0}
+.ai{font-size:11px;font-weight:600;color:var(--violet);background:var(--violet-soft);padding:2px 8px;border-radius:99px}
+.list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.list li{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:10px 0;border-top:1px solid var(--line);font-size:13.5px}
+.list li:first-child{border-top:0;padding-top:0}
+.chip{font-size:10.5px;font-weight:700;letter-spacing:.06em;padding:3px 8px;border-radius:5px;min-width:64px;text-align:center}
+.c-eg{color:var(--blue);background:var(--blue-soft)}.c-ly{color:var(--accent-ink);background:var(--accent-soft)}.c-mk{color:var(--violet);background:var(--violet-soft)}
+.date{font-size:12px;color:var(--faint);white-space:nowrap}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:4px}
+.tabs button{display:flex;align-items:center;justify-content:center;gap:8px;min-height:40px;border:0;border-radius:6px;background:none;color:var(--muted);font-weight:600}
+.tabs button[aria-pressed="true"]{background:var(--navy);color:#fff}
+dl.kv{margin:0;display:flex;flex-direction:column}
+dl.kv div{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:12px;padding:9px 0;border-top:1px solid var(--line);font-size:13.5px}
+dl.kv div:first-child{border-top:0}
+dl.kv dt{color:var(--muted);font-weight:500}dl.kv dd{margin:0;font-weight:500}
+.verify{font-size:12px;color:var(--accent-ink);background:var(--accent-soft);border-radius:7px;padding:8px 10px}
+.lic{display:flex;flex-direction:column;gap:10px}
+.lic article{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:12px;border:1px solid var(--line);border-radius:8px;background:var(--surface-2)}
+.lic h3{font-size:14.5px}.lic p{margin:0;font-size:12.5px;color:var(--muted)}
+.due{font-size:12px;font-weight:600;white-space:nowrap;padding:5px 9px;border-radius:6px;background:var(--surface);border:1px solid var(--line)}
+.due.hot{color:var(--accent-ink);border-color:var(--accent);background:var(--accent-soft)}
+.tbl{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);font-weight:600;padding:8px 10px;background:var(--surface-2)}
+td{padding:9px 10px;border-top:1px solid var(--line);vertical-align:top}
+td.k{font-weight:600}
+.st{font-size:11.5px;font-weight:600;padding:3px 8px;border-radius:99px;white-space:nowrap}
+.st.dev{color:var(--blue);background:var(--blue-soft)}.st.prod{color:var(--up);background:var(--up-soft)}.st.exp{color:var(--violet);background:var(--violet-soft)}
+.help{background:var(--navy);color:var(--on-navy);border-color:var(--navy-line)}
+.help p{margin:0;color:var(--on-navy-muted);font-size:14px}
+.help textarea{width:100%;min-height:76px;resize:vertical;border-radius:8px;border:1px solid var(--navy-line);background:var(--navy-2);color:var(--on-navy);font:inherit;font-size:14px;padding:10px}
+.help button{align-self:flex-start;min-height:42px;padding:0 18px;border-radius:8px;border:0;background:var(--accent);color:#fff;font-weight:600}
+.thanks{font-size:13px;color:var(--scan)}
+footer{border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-block:20px}
+footer a{color:var(--blue)}
+
+@media (max-width:1100px){.r1{grid-template-columns:1fr 1fr}.r1>:first-child{grid-column:1/-1}.r2{grid-template-columns:1fr 1fr}.r2>.stack:last-child{grid-column:1/-1}}
+@media (max-width:860px){.band .wrap{grid-template-columns:1fr}.nav{display:none}}
+@media (max-width:700px){.r1,.r2{grid-template-columns:1fr}.r1>*,.r2>*{grid-column:auto!important}.hud{font-size:10px}}
+@media (prefers-reduced-motion:reduce){.sweep,.pin::after{animation:none}.sweep{display:none}}
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Upstream Radar home">
+      <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="17" r="15" fill="none" stroke="#2c4775" stroke-width="1.5"/><circle cx="17" cy="17" r="9" fill="none" stroke="#2c4775" stroke-width="1.5"/><path d="M17 17 L17 2 A15 15 0 0 1 30 10 Z" fill="#4fd1c5" opacity=".35"/><path d="M17 17 L30 10" stroke="#4fd1c5" stroke-width="1.5"/><circle cx="23" cy="12" r="2.4" fill="#e0701f"/></svg>
+      <span><b>Upstream Radar</b><small>MENA Upstream Intelligence</small></span>
+    </a>
+    <span class="tag">Prototype · sample data</span>
+    <nav class="nav" aria-label="Sections">
+      <a href="#top" aria-current="page">Dashboard</a>
+      <a href="#market">Brent</a>
+      <a href="#country">Countries</a>
+      <a href="#licensing">Licensing</a>
+      <a href="#fiscal">Fiscal Terms</a>
+      <a href="#deals">M&amp;A</a>
+      <a href="#projects">Projects</a>
+    </nav>
+    <button class="bell" aria-label="3 new alerts"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10 21a2 2 0 0 0 4 0"/></svg><i>3</i></button>
+  </div>
+</header>
+
+<section class="band" id="top" aria-label="Radar overview">
+  <div class="wrap">
+    <div class="brief">
+      <h1>Every licensing round, deal and fiscal change in <span>Libya</span> and <span style="color:#6fa0f0">Egypt</span>, on one radar.</h1>
+      <p>Brent, open acreage, fiscal terms, M&amp;A and key projects, gathered from public sources and summarised with AI. More MENA countries to follow.</p>
+      <div class="cbtns" role="group" aria-label="Focus country">
+        <button class="cbtn" data-country="libya" aria-pressed="false"><svg class="flag" viewBox="0 0 24 16" aria-hidden="true"><rect width="24" height="16" fill="#239e46"/><rect width="24" height="12" fill="#000"/><rect width="24" height="4" fill="#e70013"/><circle cx="11.6" cy="8" r="2.3" fill="#fff"/><circle cx="12.3" cy="8" r="1.85" fill="#000"/><circle cx="13.6" cy="8" r=".75" fill="#fff"/></svg> Libya</button>
+        <button class="cbtn" data-country="egypt" aria-pressed="false"><svg class="flag" viewBox="0 0 24 16" aria-hidden="true"><rect width="24" height="16" fill="#000"/><rect width="24" height="10.67" fill="#fff"/><rect width="24" height="5.33" fill="#ce1126"/><circle cx="12" cy="8" r="1.6" fill="#c09300"/></svg> Egypt</button>
+      </div>
+      <div class="news">
+        <h2><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10 21a2 2 0 0 0 4 0"/></svg>What's new</h2>
+        <ul>
+          <li><span>Egypt extends bid deadline for 14 blocks to 14 Dec 2026</span><time>1 Nov</time></li>
+          <li><span>Libya NOC announces new exploration opportunities</span><time>28 Oct</time></li>
+          <li><span>Brent eases on higher supply outlook (IEA)</span><time>13 Nov</time></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="radar" id="radar">
+      <div style="position:relative">
+        <svg class="map" viewBox="0 0 1000 560" role="img" aria-label="Map of Libya, Egypt and neighbours with open areas marked">
+          <path class="grat" d="M118.8,560L118.8,438.5L118.8,0M265.4,560L265.4,438.5L265.4,0M412,560L412,438.5L412,0M558.6,560L558.6,438.5L558.6,0M705.3,560L705.3,438.5L705.3,0M851.9,560L851.9,438.5L851.9,0M998.5,560L998.5,438.5L998.5,0M0,517.2L45.5,517.2L118.8,517.2L192.1,517.2L265.4,517.2L338.7,517.2L412,517.2L485.3,517.2L558.6,517.2L631.9,517.2L705.3,517.2L778.6,517.2L851.9,517.2L925.2,517.2L998.5,517.2L1000,517.2M0,358.4L45.5,358.4L118.8,358.4L192.1,358.4L265.4,358.4L338.7,358.4L412,358.4L485.3,358.4L558.6,358.4L631.9,358.4L705.3,358.4L778.6,358.4L851.9,358.4L925.2,358.4L998.5,358.4L1000,358.4M0,193.1L45.5,193.1L118.8,193.1L192.1,193.1L265.4,193.1L338.7,193.1L412,193.1L485.3,193.1L558.6,193.1L631.9,193.1L705.3,193.1L778.6,193.1L851.9,193.1L925.2,193.1L998.5,193.1L1000,193.1M0,19.1L45.5,19.1L118.8,19.1L192.1,19.1L265.4,19.1L338.7,19.1L412,19.1L485.3,19.1L558.6,19.1L631.9,19.1L705.3,19.1L778.6,19.1L851.9,19.1L925.2,19.1L998.5,19.1L1000,19.1"/>
+          <path class="land" d="M148.3,0L149.1,2.9L149.4,7.1L151.6,10.5L146.9,18L144.2,23.3L139.1,30.6L134.5,35.4L124.7,42.5L122.3,44.8L120.7,47.2L120,49.7L120.3,52.7L123.4,60.1L127.8,64.3L132.1,66.7L139.7,65.7L139.5,68.5L140,71.9L143.1,71.7L145.2,71.2L146.9,67.9L150.7,70.1L152.6,76.9L155.7,79.1L156.1,79.8L155,80.4L154.1,81.2L155,81.7L158.1,82.6L159.9,82L162.9,83.5L162.9,83.5L162.9,84.5L161.9,91.1L161.7,93.5L161.4,97.5L161.4,102.4L163.8,106.5L163.9,108.3L162.9,110.3L158.6,112.7L153.1,115.7L148.2,118.7L143.1,121.9L141.5,123.9L138.8,125.5L136.6,127.1L136.3,128.6L134.7,131.5L132.7,133.8L127.8,134.8L126.9,135.5L124.6,139L123.5,140.3L122.2,143.1L123.9,150.5L126,158L126.4,161L126.3,163.7L125.1,166.4L122.5,170.5L120.6,173.4L116.9,178.6L115.7,179.9L113.2,181.5L108.2,183.5L104.8,185.3L103,177.3L101.4,170.4L100.1,164.8L97.9,154.7L96.1,146.2L94.2,137.7L92.5,130L90.8,122.2L90.1,121L84.9,117.3L80.2,113.9L75.3,110L69.9,105.8L69.1,100.5L66.3,92.4L63.5,87.9L62.4,86.8L56.6,83.9L53.2,81.7L52.3,80.5L51.7,77.2L49.2,70.6L46.5,64.7L45.5,60.7L45.4,55.6L46,51.9L47.1,50.3L52.8,45.7L55.5,40.2L58.7,38.1L61.5,36.5L63.8,34.7L65.8,31.8L67.4,28.6L67.6,25.3L68.3,19.9L69.3,16.1L71.7,11.9L70.8,8.4L69.5,4.7L69.7,0L148.3,0ZM156.3,27.9L151.7,30.5L152.7,28.3L155.6,25.6L156.4,26.2ZM146.9,64.5L146.1,64.7L144.8,65.7L143.9,65.7L141.8,64.7L141.1,64.7L140,64L140.3,59.8L140.6,58.6L145.8,58.5L148.7,61L149.1,61.6L149.2,62.3L147.9,63.7Z"><title>Tunisia</title></path><path class="land" d="M1000,54.3L994.1,57.8L985.7,62.9L977,68.1L970.8,71.9L962.5,76.9L954.9,81.6L947.3,86.4L941.4,90.1L932.7,95.8L927.5,99.2L919.8,104.2L913.1,108.5L905.2,113.6L895.3,112.1L892.1,111.2L889.5,108.8L887.6,107.5L882.9,106.2L879.9,101.5L878.1,99.9L874.9,99.1L875.3,97.5L877,94.7L878.6,91.6L877.8,89.9L877.4,88.5L877.3,86.8L878.4,85.1L877.9,83.1L877,81.1L876.4,80.1L876.4,78.3L876.8,76.9L877.3,74.7L878.7,73.6L879,72.3L880.2,71.1L881.9,70.1L882.2,69.4L882,68.9L880.4,68L879.4,66.5L880.3,64.2L880.8,63.5L881.8,62.4L883.9,60.7L885.6,60.4L887,60.4L889.5,60.5L891.4,60.8L891.9,60.4L891.8,59.9L889.5,58.5L889.4,57.4L889.9,56.2L891.6,54.3L893.6,52.9L894.5,52.7L896.9,50L898.3,46.9L896,39.4L894.5,38.2L892.2,37.2L890.8,37L890.7,36.5L892.5,34.6L893.9,33L892.4,31.4L889.9,30.6L888.9,32.3L885.6,32.4L880.5,32.4L878.2,24.4L877.9,21L878,17L879.6,11.1L878.8,8.4L878.7,6.6L878.3,4.1L875.3,0L1000,0Z"><title>Syria</title></path><path class="land" d="M528.8,560L528.8,546.8L528.8,532.9L528.8,529L528.8,525.1L528.8,521.2L528.8,517.3L536,517.3L543.2,517.3L550.4,517.3L557.7,517.3L557.8,517.3L557.8,517.2L557.9,517.2L558,517.1L558,501.5L558,485.9L558,470.2L558,454.5L569.3,454.5L580.5,454.5L591.7,454.5L602.9,454.5L614.1,454.5L625.3,454.5L636.5,454.5L647.6,454.5L658.8,454.5L670.1,454.5L681.3,454.5L692.5,454.5L703.7,454.5L714.9,454.5L726.1,454.6L737.3,454.6L740.7,454.6L742.2,454.3L745.1,448.4L746.3,448L748.1,448.3L748.9,449.7L748.2,451.7L747.3,454.5L752.8,454.5L762.4,454.5L772,454.5L781.7,454.5L791.3,454.5L800.9,454.5L810.5,454.5L820.1,454.5L829.7,454.5L839.3,454.5L849,454.5L858.7,454.5L868.3,454.5L877.9,454.5L887.5,454.5L897.1,454.5L906.7,454.5L907.1,461.7L908.4,467.4L912.9,475.6L916.7,480.1L918.1,482.5L918.2,483.6L918.1,484.7L916.9,483.5L914.9,482.6L914.6,486.5L915.1,489.2L915.5,494.3L917.1,499.8L916,504.8L916.2,513.4L918.2,523.7L917.8,530.2L921.1,545.5L924.3,553.9L926.1,556L928.1,557L931.9,557.8L934.8,560L528.8,560Z"><title>Sudan</title></path><path class="land" d="M907.6,346L906.9,346L904.8,343.8L903.6,342.2L902.4,341.1L896.8,338.9L895.9,337.5L896.9,336.1L897.4,337.5L898.4,338.3L903.1,340.3L908.3,344.6L909.2,345ZM1000,508.7L995,508L990.5,505L987.1,501L983.5,494.1L977.2,486.7L971.9,476.1L973.6,472.3L973.5,469.6L971.8,465L970,461.5L968.8,458.1L969.8,453.3L970.1,447.9L971.2,445.1L971.9,441.9L971,435.6L969.2,432.2L969.4,430L967.4,428.8L965.7,426.4L967.4,426.4L964.3,423L963.2,421.1L962,416.5L960.5,412.9L955.8,404.8L953.4,399.9L948.3,393.5L942.7,388.8L939.2,386.7L937.5,384.7L934.6,384.6L931.4,381.8L929.2,381.8L926.4,381.3L923.1,375.9L920.4,370.9L915.8,364.2L916.9,362.5L918.3,359.7L917.7,356.1L916.9,353.6L914.9,349L908.2,337.6L906.4,336L903.5,334.1L901.8,329.1L901,324.7L896.3,322.5L888.5,306.5L883.9,300.9L882.1,297.1L876.8,290.9L874.3,284.6L868.9,278.9L864.2,269L857.2,259L854.1,257.2L846.8,256.5L843.7,255.8L840.8,258L840.6,255.2L842.6,251.3L845.4,243.2L846,236.1L850.4,214.9L856.6,216L861.8,216.9L869.3,218.2L877.1,219.6L881.7,220.4L883.1,220L889.5,214.9L895.2,210.1L898.6,204.4L901.8,198.8L903.3,197.6L908.4,196.6L916.4,194.9L924.3,193.2L924.8,192.7L926.7,188.2L929.1,182.5L929.6,181.9L930.1,181.3L935.8,178L939.2,176.1L934.3,170.4L929.7,164.9L924.5,158.8L920.2,154L913.5,146.9L909.3,142.2L916.8,140L924.9,137.6L933.2,135.1L943.1,132.2L950.8,129.9L962.4,126.5L968,124.8L969.1,124.4L973.4,120.3L979.9,121.5L989.8,123.2L999.3,124.8L1000,125L1000,508.7ZM898.7,335.3L898.3,335.8L897.1,334.6L897.2,332.1L898.2,330.7L898.1,332.6L898.7,334.6Z"><title>Saudi Arabia</title></path><path class="land" d="M0,530.5L5.3,525.5L9.2,522L17,514.9L22.9,509.5L30.5,502.5L38.6,495.5L45,489.9L55,483.5L70.2,473.9L85.4,464.3L100.6,454.7L115.7,445L130.9,435.3L146.1,425.6L161.3,415.9L176.5,406.1L191.8,409.8L206.3,413.4L220.9,416.9L224.4,418.8L232.1,425.8L242,434.6L242.4,434.8L242.8,434.8L252.4,429.6L264.8,422.8L268.1,441.1L270.5,456.8L270.7,466.8L270.8,469.4L271.7,471.2L274.1,473L283.3,487.3L281.2,489.8L282.6,494.2L285,496.1L292.6,504.7L293.7,506.4L293.3,507.7L287.9,517.8L286.9,520.2L285.9,532.9L285.2,541.9L284.1,554.2L283.6,560L0,560Z"><title>Niger</title></path><path class="libya" d="M104.8,185.3L108.2,183.5L113.2,181.5L115.7,179.9L116.9,178.6L120.6,173.4L122.5,170.5L125.1,166.4L126.3,163.7L126.4,161L126,158L123.9,150.5L122.2,143.1L123.5,140.3L124.6,139L126.9,135.5L127.8,134.8L132.7,133.8L134.7,131.5L136.3,128.6L136.6,127.1L138.8,125.5L141.5,123.9L143.1,121.9L148.2,118.7L153.1,115.7L158.6,112.7L162.9,110.3L163.9,108.3L163.8,106.5L161.4,102.4L161.4,97.5L161.7,93.5L161.9,91.1L162.9,84.5L162.9,83.5L167.5,85.7L172,86.6L185.7,94.8L189.9,95.9L199.5,96.8L210.8,93.5L215.1,92.8L222.6,96L225.8,96.9L231.3,97.2L240.7,100L243,101L248.5,105.6L251.2,106.9L270.6,111.1L273.2,113.9L276,119.1L276.1,125.7L277.6,130.4L280,136.5L282.9,140.8L286.1,144.4L289.8,146.7L298.3,150L308,151.2L317.7,151.7L334.3,156.2L348.4,161.5L351.9,164.1L358.9,166.7L373.1,179L380.9,183.2L386.4,184.1L391.2,183.3L400,179L403.6,176.5L412.5,165.9L415.3,160.3L416.5,156.4L416.2,152.4L415.1,148.7L412.7,145L410.9,140L409.9,130.9L411.3,124.7L413,120.9L415.6,117.1L422.9,109.7L430.3,104.5L443.2,97.7L450.7,97.6L453.8,96.9L460,92.1L462.5,91.9L466,93.1L476.2,92.7L480.6,94.1L486,97.1L492.8,99L497.5,100.8L502.6,103.2L503.8,109.1L503.2,110.9L503.1,113.2L508.4,117.2L523.4,119.2L526.4,120.3L530.5,123.4L533.1,124.3L543.4,124.8L549.4,124.1L555.1,125.2L557.2,126.3L559.4,128.7L562,134.6L563.1,136.6L561.9,137.5L560.3,139.6L559.3,141.4L556.5,144.4L554.3,147.5L554.5,152.3L555.1,156.9L556.5,161.6L557.9,166.7L557.5,170L556.3,174.1L555.1,177.6L550.6,184.6L549.9,186.2L550.2,188.6L552.9,196.9L553.1,199.5L554.8,207.6L556.2,214.2L557.8,219.2L558,220.7L558,228.2L558,235.7L558,243.2L558,250.7L558,258.1L558,265.6L558,273.1L558,280.5L558,287.9L558,295.3L558,302.6L558,310L558,317.4L558,324.7L558,332L558,339.3L558,346.7L558,353.9L558,361.2L558,368.5L558,375.7L558,382.9L558,390.1L558,397.3L558,404.5L558,411.7L558,418.8L558,426L558,433.2L558,440.3L558,447.4L558,454.5L558,470.2L558,485.9L558,501.5L558,517.1L557.9,517.2L557.8,517.2L557.8,517.3L557.7,517.3L550.4,517.3L543.2,517.3L536,517.3L528.8,517.3L528.8,521.2L528.8,525.1L528.8,529L528.8,532.9L514.7,525.5L500.6,518.1L486.6,510.8L472.5,503.4L458.5,495.9L444.4,488.5L430.4,481.1L416.4,473.6L402.3,466.2L388.3,458.7L374.2,451.3L360.2,443.7L346.2,436.2L332.1,428.7L318,421.2L303.9,413.6L294.2,408.4L283.8,413.5L275.7,417.5L264.8,422.8L252.4,429.6L242.8,434.8L242.4,434.8L242,434.6L232.1,425.8L224.4,418.8L220.9,416.9L206.3,413.4L191.8,409.8L176.5,406.1L173.8,400.4L170.6,394.1L166.4,386.2L163.9,381.3L163,380.5L151.3,376.7L139,372.9L131.7,375.2L130.4,375.1L128.4,373.6L126.3,371.6L125.2,368.9L122.3,365.2L119.6,356.8L119.4,350.1L118.8,347.7L112.4,338.2L106.5,329.5L102.6,323.8L101.9,321.2L102.3,317.9L103.9,315L109.6,311.6L114.7,307.9L115.4,305.3L115.7,298.2L114,296L112.8,291.7L111.6,286L111.4,282.3L113.7,275L116.4,267.3L114.7,258.7L113.4,241.5L114.3,227.9L113.5,222.9L113.1,220.8L111.4,214.4L109.2,207.7L108.2,205.4L105.5,200L101,193.3L98.6,189.2L101.8,187Z"><title>Libya</title></path><path class="land" d="M880.5,32.4L885.6,32.4L888.9,32.3L889.9,30.6L892.4,31.4L893.9,33L892.5,34.6L890.7,36.5L890.8,37L892.2,37.2L894.5,38.2L896,39.4L898.3,46.9L896.9,50L894.5,52.7L893.6,52.9L891.6,54.3L889.9,56.2L889.4,57.4L889.5,58.5L891.8,59.9L891.9,60.4L891.4,60.8L889.5,60.5L887,60.4L885.6,60.4L883.9,60.7L881.8,62.4L880.8,63.5L880.3,64.2L879.4,66.5L880.4,68L882,68.9L882.2,69.4L881.9,70.1L880.2,71.1L879,72.3L878.7,73.6L877.3,74.7L876.5,75.3L874.9,76.9L873.4,78.3L870.3,80.3L869.5,81.5L868.9,80.4L867.5,81.1L866.4,85.7L863.9,87.3L860.9,87.1L858.4,86.7L855.1,87L856.4,84.3L857.8,80.8L859.2,76.1L861.7,72.2L866.9,58.9L869.8,53.6L870.9,45.9L875.4,39.2L878.9,37.2L880.5,35.3Z"><title>Lebanon</title></path><path class="land" d="M874.9,99.1L878.1,99.9L879.9,101.5L882.9,106.2L887.6,107.5L889.5,108.8L892.1,111.2L895.3,112.1L905.2,113.6L913.1,108.5L919.8,104.2L927.5,99.2L932.7,95.8L941.4,90.1L947.3,86.4L954.9,81.6L962.5,76.9L964.6,84.6L966.6,92.2L968.8,100L970.9,107.5L968.6,108.3L970.3,114.1L973.3,113.2L976.4,112.5L977.7,116.2L973.4,120.3L969.1,124.4L968,124.8L962.4,126.5L950.8,129.9L943.1,132.2L933.2,135.1L924.9,137.6L916.8,140L909.3,142.2L913.5,146.9L920.2,154L924.5,158.8L929.7,164.9L934.3,170.4L939.2,176.1L935.8,178L930.1,181.3L929.6,181.9L929.1,182.5L926.7,188.2L924.8,192.7L924.3,193.2L916.4,194.9L908.4,196.6L903.3,197.6L901.8,198.8L898.6,204.4L895.2,210.1L889.5,214.9L883.1,220L881.7,220.4L877.1,219.6L869.3,218.2L861.8,216.9L856.6,216L850.4,214.9L851.4,210.5L851.1,208.1L852.5,200.3L853.4,196.6L853.9,193.8L856,188.3L855.7,186.5L856.2,180L856,178.8L857,175.3L858.8,170.2L860.6,165.8L861.3,163.8L863.1,159.6L864.8,154.5L863.8,151.7L863.6,151.1L864.2,147.9L865.1,142.6L865.5,139.7L866.5,136L868.3,132.7L867.4,125.2L867.5,121.1L868.7,116.4L868,110.9L868.6,103.1L868.7,102.4L869.3,101.4L869.7,101L873.4,99.3Z"><title>Jordan</title></path><path class="land" d="M877.3,74.7L876.8,76.9L876.4,78.3L876.4,80.1L877,81.1L877.9,83.1L878.4,85.1L877.3,86.8L877.4,88.5L877.8,89.9L878.6,91.6L877,94.7L875.3,97.5L874.9,99.1L873.4,99.3L869.7,101L869.3,101.4L868.7,102.4L868.6,103.1L868,110.9L866,110.7L863.6,109.1L863.2,107.5L862.5,107.1L860.8,106.9L857.5,106.1L853.8,108.7L852.2,112.9L851.8,114.9L850.5,119.1L851.1,121.6L851.3,124.9L851.6,127.6L851.3,129.3L850.5,130.2L850.7,130.8L851.4,131L853.4,130.3L855.6,131L857.7,132.4L857.8,133.3L856.3,133.8L852.8,135.9L850.4,138.4L849.8,140.6L848.1,145.5L848.3,146.4L849.2,147L854.9,146.5L859.9,144.6L863.8,142.5L865.1,142.6L864.2,147.9L863.6,151.1L863.8,151.7L864.8,154.5L863.1,159.6L861.3,163.8L860.6,165.8L858.8,170.2L857,175.3L856,178.8L856.2,180L855.7,186.5L856,188.3L853.9,193.8L853.4,196.6L852.5,200.3L851.1,208.1L849,210.7L848,207.8L845.8,199.5L844.1,193.7L841.9,186.6L838.1,177.9L837.8,175.9L836.9,172.8L834.3,164.9L832.2,159.2L829.7,151.9L832.8,149L832.8,146.6L838,141L837.9,140.4L836.5,139L836.7,138.7L842.4,128.2L846.1,117.9L849.6,103.3L852,95.9L854.1,91L855.1,87L858.4,86.7L860.9,87.1L863.9,87.3L866.4,85.7L867.5,81.1L868.9,80.4L869.5,81.5L870.3,80.3L873.4,78.3L874.9,76.9L876.5,75.3Z"><title>Israel</title></path><path class="land" d="M836.5,139L837.9,140.4L838,141L832.8,146.6L832.8,149L829.7,151.9L828.8,149L828.4,148L833.8,142.5ZM868,110.9L868.7,116.4L867.5,121.1L867.4,125.2L868.3,132.7L866.5,136L865.5,139.7L865.1,142.6L863.8,142.5L859.9,144.6L854.9,146.5L849.2,147L848.3,146.4L848.1,145.5L849.8,140.6L850.4,138.4L852.8,135.9L856.3,133.8L857.8,133.3L857.7,132.4L855.6,131L853.4,130.3L851.4,131L850.7,130.8L850.5,130.2L851.3,129.3L851.6,127.6L851.3,124.9L851.1,121.6L850.5,119.1L851.8,114.9L852.2,112.9L853.8,108.7L857.5,106.1L860.8,106.9L862.5,107.1L863.2,107.5L863.6,109.1L866,110.7Z"><title>Palestine</title></path><path class="land" d="M1000,125L999.3,124.8L989.8,123.2L979.9,121.5L973.4,120.3L977.7,116.2L976.4,112.5L973.3,113.2L970.3,114.1L968.6,108.3L970.9,107.5L968.8,100L966.6,92.2L964.6,84.6L962.5,76.9L970.8,71.9L977,68.1L985.7,62.9L994.1,57.8L1000,54.3L1000,125Z"><title>Iraq</title></path><path class="land" d="M623.6,0L624.1,1.9L622.4,2.4L622.4,2.4L621.4,4.4L620.2,2.7L620.7,0.8L620.4,0L623.6,0ZM525.5,0L527,0.2L529.7,0.1L530.1,0L534.8,0L534.8,0L533,0.8L532.5,1.4L532.9,1.8L534.6,2.6L536.8,2.3L536.9,3.9L537.3,5.3L538.5,6.1L539.7,6.2L542.4,6L545,5.5L547.7,4.4L550.4,3.9L558.8,4.4L561.7,6.7L567.3,7L572.6,8.2L575.3,7.4L580.1,6.6L580.8,7.4L580.2,12.5L580.5,14L581.9,14.7L583.1,14.4L584.8,12.7L588.7,11.4L592.9,11.4L596.3,8.1L597.4,7.9L596.8,9.5L596.2,13.4L595.5,15.7L595.2,17.5L592.9,18.5L589.4,18.6L582.9,18.3L576.6,18.9L564.7,20.6L552.7,21.5L551.2,20.9L551.2,18.6L550.8,17.1L550.1,16L546.4,15L542.9,13.4L529.2,11.2L525.9,10.3L520.7,10.8L518.8,10.7L517.4,9.9L516.4,8.6L516,4.2L516.7,0L518.3,0L518.3,0L518.3,0.1L519.7,0.7L520.4,0L525.5,0Z"><title>Greece</title></path><path class="egypt" d="M906.7,454.5L897.1,454.5L887.5,454.5L877.9,454.5L868.3,454.5L858.7,454.5L849,454.5L839.3,454.5L829.7,454.5L820.1,454.5L810.5,454.5L800.9,454.5L791.3,454.5L781.7,454.5L772,454.5L762.4,454.5L752.8,454.5L747.3,454.5L748.2,451.7L748.9,449.7L748.1,448.3L746.3,448L745.1,448.4L742.2,454.3L740.7,454.6L737.3,454.6L726.1,454.6L714.9,454.5L703.7,454.5L692.5,454.5L681.3,454.5L670.1,454.5L658.8,454.5L647.6,454.5L636.5,454.5L625.3,454.5L614.1,454.5L602.9,454.5L591.7,454.5L580.5,454.5L569.3,454.5L558,454.5L558,447.4L558,440.3L558,433.2L558,426L558,418.8L558,411.7L558,404.5L558,397.3L558,390.1L558,382.9L558,375.7L558,368.5L558,361.2L558,353.9L558,346.7L558,339.3L558,332L558,324.7L558,317.4L558,310L558,302.6L558,295.3L558,287.9L558,280.5L558,273.1L558,265.6L558,258.1L558,250.7L558,243.2L558,235.7L558,228.2L558,220.7L557.8,219.2L556.2,214.2L554.8,207.6L553.1,199.5L552.9,196.9L550.2,188.6L549.9,186.2L550.6,184.6L555.1,177.6L556.3,174.1L557.5,170L557.9,166.7L556.5,161.6L555.1,156.9L554.5,152.3L554.3,147.5L556.5,144.4L559.3,141.4L560.3,139.6L561.9,137.5L563.1,136.6L565.3,140.7L569.8,141.5L584.8,137.8L601.4,141.5L610.5,142.9L624.5,146.1L633.1,151.8L635.5,152.5L641.6,152.4L645.6,155.7L661.7,157.3L670.2,161L675.1,164L678,164.8L680.6,164.7L684.1,163.6L688.5,161.5L693.2,158.7L703.2,151.2L706.6,149.9L709,150.3L711.8,150.2L713,148.2L714.5,146.8L715.3,145.2L716.9,143.4L722,142.8L732.3,139.6L731.1,141.1L721.7,144.7L725.8,145.2L729.9,144L734.6,143.2L735.5,141.6L736.1,138.7L737.1,138.4L740.2,138.9L749.9,143.3L752.4,143.4L759.2,141L760.6,140.4L762.8,141.8L767.9,147.4L766.1,147.2L760.7,142.5L760.3,144.9L757.2,149L761,150.8L764.2,151.5L765.9,153.8L766.9,155.9L770,155L772.2,152.2L771,150.6L770.2,149L771.3,148.9L773.4,150.3L779.5,155.6L781.6,156.7L783.9,156.5L789,155L790.4,155.2L797,153.3L797.9,154.7L798.9,156.2L804.3,154.6L812.7,154.6L819.7,152.8L827.7,148.6L828.4,148L828.8,149L829.7,151.9L832.2,159.2L834.3,164.9L836.9,172.8L837.8,175.9L838.1,177.9L841.9,186.6L844.1,193.7L845.8,199.5L848,207.8L849,210.7L847.5,212.2L844.1,217.7L840.6,234.9L835.6,248.3L835.1,256.6L834.3,259.6L831.8,263.8L829,267.9L823.8,265.8L815.5,258.6L810.6,251.6L805.5,247.2L800.5,241.2L799.1,237L799.2,234.2L797,227.5L795.4,224.3L789.4,217.1L787.7,213.3L786.3,211.6L785.1,209.2L782.9,199.9L780.4,193.9L777.8,195.6L778.2,198.1L775.9,201.6L774.4,205.6L775.6,208.8L780.4,213.8L781.5,216L782.7,220.6L782.4,227L783.2,229.2L786.9,233.9L788.2,236.7L789,239.1L790.3,241.3L793.8,245.4L799.1,253.2L804.1,258.4L807.8,261L809.3,263.5L809.6,270L809.4,273.2L812.5,279L813.7,281.9L816.7,284.4L818.1,287.1L819.4,291.6L821.3,304.7L824,307.9L832.2,325.1L839.1,336L842.5,344.1L847.6,353.9L857.6,375.4L863.5,382L865.8,385.7L870.2,388.5L874.8,392.6L870.4,392.2L869.3,392.5L867.7,393.2L867,395.7L866.7,397.8L867.2,408.5L868.4,414L872.3,424.4L875.2,427.5L876.7,429.5L878.6,430.9L887.9,434.4L893.4,441.9L905.5,451.3L906.7,453.8Z"><title>Egypt</title></path><path class="land" d="M833.1,0L820.9,8.7L819.8,11.9L820.5,14.1L822.7,16.8L822.7,16.8L821.5,17.1L819.7,16.1L818.6,15.8L817.6,16.7L816.4,17.4L815.4,17.7L814.5,17.8L813.1,18.5L811.3,18.3L808.6,17.8L807.1,19.1L806.8,18.9L806.6,15.5L805.7,14.1L804.5,13.3L802.8,13.7L800.5,13.5L798.8,12.9L795.5,13.9L792.8,15L790.9,16L789.4,16L786.9,15L785,13.9L784.8,13L786.6,13.4L789.7,12.7L791.1,9.2L791.5,5.1L796.8,6.3L802.3,6.9L806.7,7.1L811,6.4L824.3,2.1L827.5,0L833.1,0Z"><title>N. Cyprus</title></path><path class="land" d="M784.8,13L785,13.9L786.9,15L789.4,16L790.9,16L792.8,15L795.5,13.9L798.8,12.9L800.5,13.5L802.8,13.7L804.5,13.3L805.7,14.1L806.6,15.5L806.8,18.9L807.1,19.1L808.6,17.8L811.3,18.3L813.1,18.5L814.5,17.8L815.4,17.7L816.4,17.4L817.6,16.7L818.6,15.8L819.7,16.1L821.5,17.1L822.7,16.8L823.2,17.5L824,19.6L820.7,20.2L817.4,20.4L815.5,20.1L813.7,20.2L808.3,26.1L805.3,28.1L801.9,29.2L798.4,29.9L796.6,30L795,30.7L793.9,32.1L793.9,33.5L793.4,34.5L791.5,34.3L790.7,32.2L789.3,31.2L785.9,31.7L784.2,31.7L778.7,29.6L777.1,28.8L776,27.1L773.2,20.8L772.7,16.2L775.4,17.3L777.8,15.9L780.2,13.5L783.1,12.6Z"><title>Cyprus</title></path><path class="land" d="M283.6,560L284.1,554.2L285.2,541.9L285.9,532.9L286.9,520.2L287.9,517.8L293.3,507.7L293.7,506.4L292.6,504.7L285,496.1L282.6,494.2L281.2,489.8L283.3,487.3L274.1,473L271.7,471.2L270.8,469.4L270.7,466.8L270.5,456.8L268.1,441.1L264.8,422.8L275.7,417.5L283.8,413.5L294.2,408.4L303.9,413.6L318,421.2L332.1,428.7L346.2,436.2L360.2,443.7L374.2,451.3L388.3,458.7L402.3,466.2L416.4,473.6L430.4,481.1L444.4,488.5L458.5,495.9L472.5,503.4L486.6,510.8L500.6,518.1L514.7,525.5L528.8,532.9L528.8,532.9L528.8,546.8L528.8,560L283.6,560Z"><title>Chad</title></path><path class="land" d="M69.7,0L69.5,4.7L70.8,8.4L71.7,11.9L69.3,16.1L68.3,19.9L67.6,25.3L67.4,28.6L65.8,31.8L63.8,34.7L61.5,36.5L58.7,38.1L55.5,40.2L52.8,45.7L47.1,50.3L46,51.9L45.4,55.6L45.5,60.7L46.5,64.7L49.2,70.6L51.7,77.2L52.3,80.5L53.2,81.7L56.6,83.9L62.4,86.8L63.5,87.9L66.3,92.4L69.1,100.5L69.9,105.8L75.3,110L80.2,113.9L84.9,117.3L90.1,121L90.8,122.2L92.5,130L94.2,137.7L96.1,146.2L97.9,154.7L100.1,164.8L101.4,170.4L103,177.3L104.8,185.3L101.8,187L98.6,189.2L101,193.3L105.5,200L108.2,205.4L109.2,207.7L111.4,214.4L113.1,220.8L113.5,222.9L114.3,227.9L113.4,241.5L114.7,258.7L116.4,267.3L113.7,275L111.4,282.3L111.6,286L112.8,291.7L114,296L115.7,298.2L115.4,305.3L114.7,307.9L109.6,311.6L103.9,315L102.3,317.9L101.9,321.2L102.6,323.8L106.5,329.5L112.4,338.2L118.8,347.7L119.4,350.1L119.6,356.8L122.3,365.2L125.2,368.9L126.3,371.6L128.4,373.6L130.4,375.1L131.7,375.2L139,372.9L151.3,376.7L163,380.5L163.9,381.3L166.4,386.2L170.6,394.1L173.8,400.4L176.5,406.1L161.3,415.9L146.1,425.6L130.9,435.3L115.7,445L100.6,454.7L85.4,464.3L70.2,473.9L55,483.5L45,489.9L38.6,495.5L30.5,502.5L22.9,509.5L17,514.9L9.2,522L5.3,525.5L0,530.5L0,0Z"><title>Algeria</title></path>
+          <text class="sea" x="360" y="40">MEDITERRANEAN SEA</text>
+          <text class="clabel" x="353" y="288" text-anchor="middle">LIBYA</text>
+          <text class="clabel" x="701" y="307" text-anchor="middle">EGYPT</text>
+        </svg>
+        <svg class="rings" viewBox="0 0 1000 560" preserveAspectRatio="none" aria-hidden="true">
+          <g fill="none" stroke="#4fd1c5" stroke-opacity=".12"><circle cx="500" cy="270" r="120"/><circle cx="500" cy="270" r="240"/><circle cx="500" cy="270" r="360"/></g>
+        </svg>
+        <div class="sweep" aria-hidden="true"></div>
+        <div class="hud" aria-hidden="true"><span>SCAN · LIBYA / EGYPT</span><span id="hudCount">10 SIGNALS</span></div>
+        <div id="pins"></div>
+      </div>
+      <div class="rfoot">
+      <div class="legend" aria-label="Legend">
+        <span style="--c:#e0701f"><i></i>Bid round · closing &lt; 30 days</span>
+        <span style="--c:#4fd1c5"><i></i>Open acreage</span>
+        <span style="--c:#7ea3f5"><i></i>Project / discovery</span>
+      </div>
+      <div class="card-pop" id="pop" aria-live="polite"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<main>
+  <div class="wrap">
+    <div class="row r1" id="market">
+      <section class="card" aria-labelledby="brentH">
+        <div class="card-h">
+          <h2 id="brentH"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3c3 4 6 7 6 11a6 6 0 0 1-12 0c0-4 3-7 6-11z"/></svg>Brent crude</h2>
+          <div class="seg" role="group" aria-label="Chart range" id="ranges">
+            <button aria-pressed="false">1D</button><button aria-pressed="false">1W</button><button aria-pressed="true">1M</button><button aria-pressed="false">3M</button><button aria-pressed="false">1Y</button>
+          </div>
+        </div>
+        <div class="price"><span class="big num" id="px">$98.45</span><span class="unit">/bbl</span><span class="chg up num" id="chg">▲ +4.09%</span><span class="src" id="chgLbl">vs. previous day</span></div>
+        <svg class="chart" id="chart" viewBox="0 0 400 120" preserveAspectRatio="none" aria-label="Brent price chart"></svg>
+        <span class="src">Source: U.S. EIA daily spot (RBRTE), 1–2 day lag · prototype shows sample values</span>
+      </section>
+
+      <section class="card" aria-labelledby="insH">
+        <div class="card-h"><h2 id="insH"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/></svg>Market insight</h2><span class="ai">AI summary</span></div>
+        <p class="insight">Brent rose 4.1% to $98.45/bbl on 13 Nov, mainly on stronger demand signals and renewed geopolitical tension in the region. The IEA's latest report still points to supply exceeding demand by about 1.7 mb/d in Q4, which may keep the upside limited.</p>
+        <span class="src">Written by AI from the figures and sources on this page. Every number is checked against the data before it is shown.</span>
+      </section>
+
+      <section class="card" aria-labelledby="kuH">
+        <div class="card-h"><h2 id="kuH"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Key updates</h2></div>
+        <ul class="list">
+          <li><span class="chip c-eg">EGYPT</span><span>14-block licensing round, bids due 14 Dec 2026</span><span class="date">1 Nov</span></li>
+          <li><span class="chip c-ly">LIBYA</span><span>NOC invites E&amp;P interest in onshore and offshore blocks</span><span class="date">28 Oct</span></li>
+          <li><span class="chip c-mk">MARKET</span><span>IEA: Q4 supply could exceed demand by ~1.7 mb/d</span><span class="date">13 Nov</span></li>
+        </ul>
+      </section>
+    </div>
+
+    <div class="row r2">
+      <section class="card" id="country" aria-labelledby="coH">
+        <div class="card-h"><h2 id="coH"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2z"/><path d="M9 4v14M15 6v14"/></svg>Country overview</h2></div>
+        <div class="tabs" role="group" aria-label="Country">
+          <button data-country="libya" aria-pressed="true"><svg class="flag" viewBox="0 0 24 16" aria-hidden="true"><rect width="24" height="16" fill="#239e46"/><rect width="24" height="12" fill="#000"/><rect width="24" height="4" fill="#e70013"/><circle cx="11.6" cy="8" r="2.3" fill="#fff"/><circle cx="12.3" cy="8" r="1.85" fill="#000"/><circle cx="13.6" cy="8" r=".75" fill="#fff"/></svg> Libya</button>
+          <button data-country="egypt" aria-pressed="false"><svg class="flag" viewBox="0 0 24 16" aria-hidden="true"><rect width="24" height="16" fill="#000"/><rect width="24" height="10.67" fill="#fff"/><rect width="24" height="5.33" fill="#ce1126"/><circle cx="12" cy="8" r="1.6" fill="#c09300"/></svg> Egypt</button>
+        </div>
+        <dl class="kv" id="kv"></dl>
+        <p class="verify">Indicative ranges for the prototype. Each term will link to the law or official model contract it comes from, with the date it was last checked.</p>
+      </section>
+
+      <div class="stack">
+        <section class="card" id="licensing" aria-labelledby="licH">
+          <div class="card-h"><h2 id="licH"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 4l6 6-9 9H5v-6z"/></svg>Licensing &amp; auctions</h2><a class="more" href="#licensing">View all ›</a></div>
+          <div class="lic">
+            <article><svg class="flag" viewBox="0 0 24 16" aria-hidden="true"><rect width="24" height="16" fill="#000"/><rect width="24" height="10.67" fill="#fff"/><rect width="24" height="5.33" fill="#ce1126"/><circle cx="12" cy="8" r="1.6" fill="#c09300"/></svg><div><h3>Egypt · 2026 licensing round</h3><p>14 exploration blocks · EGAS &amp; EGPC</p></div><span class="due hot num" id="dueEg">Bids due 14 Dec</span></article>
+            <article><svg class="flag" viewBox="0 0 24 16" aria-hidden="true"><rect width="24" height="16" fill="#239e46"/><rect width="24" height="12" fill="#000"/><rect width="24" height="4" fill="#e70013"/><circle cx="11.6" cy="8" r="2.3" fill="#fff"/><circle cx="12.3" cy="8" r="1.85" fill="#000"/><circle cx="13.6" cy="8" r=".75" fill="#fff"/></svg><div><h3>Libya · exploration opportunities</h3><p>New onshore and offshore areas · NOC</p></div><span class="due">Interest window open</span></article>
+          </div>
+        </section>
+
+        <section class="card" id="deals" aria-labelledby="maH">
+          <div class="card-h"><h2 id="maH"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 7h11l-3-3M17 17H6l3 3"/></svg>M&amp;A / asset transactions</h2><a class="more" href="#deals">View all ›</a></div>
+          <ul class="list">
+            <li><span class="chip c-eg">EGYPT</span><span>Example Energy acquires 25% stake in a Western Desert asset</span><span class="date">10 Nov</span></li>
+            <li><span class="chip c-ly">LIBYA</span><span>Mediterranean Oil agrees farm-in to an offshore block</span><span class="date">29 Oct</span></li>
+            <li><span class="chip c-eg">EGYPT</span><span>Regional E&amp;P in talks to divest non-core assets</span><span class="date">22 Oct</span></li>
+          </ul>
+        </section>
+
+        <section class="card" id="projects" aria-labelledby="prH">
+          <div class="card-h"><h2 id="prH"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2l4 20H8z"/><path d="M9 14h6M10 9h4"/></svg>Upstream project tracker</h2><a class="more" href="#projects">View all ›</a></div>
+          <div class="tbl"><table>
+            <thead><tr><th>Project / field</th><th>Country</th><th>Operator</th><th>Status</th><th>Notes</th></tr></thead>
+            <tbody>
+              <tr><td class="k">Delta gas development</td><td>Egypt</td><td>Sample Co.</td><td><span class="st dev">Development</span></td><td>Phase 1 on track</td></tr>
+              <tr><td class="k">Offshore gas field</td><td>Libya</td><td>NOC JV</td><td><span class="st prod">Producing</span></td><td>Output stable</td></tr>
+              <tr><td class="k">West Med block</td><td>Egypt</td><td>Sample Co.</td><td><span class="st exp">Exploration</span></td><td>Well planned Q1 2027</td></tr>
+            </tbody>
+          </table></div>
+        </section>
+      </div>
+
+      <div class="stack">
+        <section class="card" id="fiscal" aria-labelledby="fiH">
+          <div class="card-h"><h2 id="fiH"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3v18M5 7h14M5 7l-3 7h6zM19 7l-3 7h6z"/></svg>Fiscal terms explorer</h2></div>
+          <div class="tbl"><table>
+            <thead><tr><th>Key term</th><th>Libya</th><th>Egypt</th></tr></thead>
+            <tbody>
+              <tr><td class="k">Contract type</td><td>EPSA</td><td>Concession / PSA</td></tr>
+              <tr><td class="k">Royalty</td><td>0–12%</td><td>~10–20%</td></tr>
+              <tr><td class="k">Petroleum tax</td><td>~20%</td><td>~40% (concession)</td></tr>
+              <tr><td class="k">Cost recovery</td><td>Yes, capped</td><td>Yes (PSA)</td></tr>
+              <tr><td class="k">NOC participation</td><td>0–25%</td><td>Usually 0–50%</td></tr>
+            </tbody>
+          </table></div>
+          <span class="src">Indicative · to be verified against official sources</span>
+          <a class="more" href="#fiscal">View detailed comparison ›</a>
+        </section>
+
+        <section class="card help" aria-labelledby="hlH">
+          <h2 id="hlH" style="font-size:17px">Help us improve</h2>
+          <p>Which country, fiscal detail or analysis tool should come next?</p>
+          <form id="fb">
+            <label for="fbText" class="eyebrow" style="color:var(--on-navy-muted)">Your suggestion</label>
+            <textarea id="fbText" placeholder="e.g. Add Algeria and a PSC economics calculator"></textarea>
+            <div style="display:flex;align-items:center;gap:12px;margin-top:10px;flex-wrap:wrap"><button type="submit">Suggest a feature</button><span class="thanks" id="thanks" hidden>Thanks, noted.</span></div>
+          </form>
+        </section>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Upstream Radar · a personal project built on public sources (EIA, NOC Libya, EGAS, EGPC, Egypt Ministry of Petroleum). Not investment advice.</span>
+    <span>Need a quick feasibility check? <a href="https://feasibility-ai-tr.streamlit.app" target="_blank" rel="noopener">FeasibilityAI ›</a></span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  const PINS={"sirte":[38.3,38.7],"murzuq":[19.5,58.2],"ghadames":[13.6,32.1],"cyren":[45.9,15.4],"bes":[18.9,14.2],"wdes":[62.3,36.9],"delta":[74,22.3],"suez":[79.3,42.9],"redsea":[85.8,60.5],"medw":[60.3,21]};
+  const SIG=[
+    {k:"delta",c:"#e0701f",t:"Offshore Nile Delta blocks",co:"Egypt",kind:"Bid round",who:"EGAS",when:"Bids due 14 Dec 2026"},
+    {k:"medw",c:"#e0701f",t:"West Mediterranean blocks",co:"Egypt",kind:"Bid round",who:"EGAS",when:"Bids due 14 Dec 2026"},
+    {k:"wdes",c:"#e0701f",t:"Western Desert onshore blocks",co:"Egypt",kind:"Bid round",who:"EGPC",when:"Bids due 14 Dec 2026"},
+    {k:"suez",c:"#7ea3f5",t:"Gulf of Suez redevelopment",co:"Egypt",kind:"Project",who:"Sample Co.",when:"Development"},
+    {k:"redsea",c:"#4fd1c5",t:"Red Sea frontier acreage",co:"Egypt",kind:"Open acreage",who:"Ganope",when:"Data room open"},
+    {k:"sirte",c:"#4fd1c5",t:"Sirte Basin onshore areas",co:"Libya",kind:"Open acreage",who:"NOC",when:"Interest window open"},
+    {k:"ghadames",c:"#4fd1c5",t:"Ghadames Basin areas",co:"Libya",kind:"Open acreage",who:"NOC",when:"Interest window open"},
+    {k:"murzuq",c:"#7ea3f5",t:"Murzuq Basin fields",co:"Libya",kind:"Project",who:"NOC JV",when:"Producing"},
+    {k:"cyren",c:"#4fd1c5",t:"Offshore Cyrenaica blocks",co:"Libya",kind:"Open acreage",who:"NOC",when:"Interest window open"},
+    {k:"bes",c:"#7ea3f5",t:"Offshore gas field",co:"Libya",kind:"Project",who:"NOC JV",when:"Producing"}
+  ];
+  const pinsEl=document.getElementById('pins'),pop=document.getElementById('pop');
+  SIG.forEach((s,i)=>{
+    const b=document.createElement('button');
+    b.className='pin';b.style.left=PINS[s.k][0]+'%';b.style.top=PINS[s.k][1]+'%';
+    b.style.setProperty('--c',s.c);b.style.setProperty('--d',(i*0.37%2.4).toFixed(2)+'s');
+    b.setAttribute('aria-label',s.t+', '+s.co);b.setAttribute('aria-pressed','false');
+    b.onclick=()=>select(i);pinsEl.appendChild(b);
+  });
+  function select(i){
+    const s=SIG[i];
+    pinsEl.querySelectorAll('.pin').forEach((p,j)=>p.setAttribute('aria-pressed',j===i?'true':'false'));
+    pop.innerHTML='<span class="eyebrow" style="color:'+s.c+'">'+s.kind+' · '+s.co+'</span><b>'+s.t+'</b><span class="meta">Sample signal · tap a dot to inspect</span>'+
+      '<div class="row"><span>Authority / operator</span><span>'+s.who+'</span></div><div class="row"><span>Status</span><span>'+s.when+'</span></div>';
+  }
+  select(0);
+
+  const COUNTRY={
+    libya:[["Contract regime","EPSA (Exploration & Production Sharing Agreement)"],["Royalty","Typically 0–12%, field and terms specific"],["Petroleum tax","~20% plus applicable levies"],["Cost recovery","Yes, subject to a cap (e.g. 50–70%)"],["Profit split","Sliding scale (e.g. contractor 20–49%)"],["NOC participation","Commonly 0–25%, negotiable"],["Licensing authority","National Oil Corporation (NOC)"]],
+    egypt:[["Contract regime","Concession agreements and PSAs"],["Royalty","~10–20%, set per agreement"],["Petroleum tax","~40% under concessions"],["Cost recovery","Yes under PSAs, capped per agreement"],["Profit split","Negotiated per bid round"],["NOC participation","Usually 0–50%"],["Licensing authority","EGPC (oil), EGAS (gas), Ganope (Red Sea)"]]
+  };
+  const kv=document.getElementById('kv');
+  function setCountry(c){
+    kv.innerHTML=COUNTRY[c].map(r=>'<div><dt>'+r[0]+'</dt><dd>'+r[1]+'</dd></div>').join('');
+    document.querySelectorAll('[data-country]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.country===c?'true':'false'));
+    document.querySelectorAll('.libya,.egypt').forEach(p=>p.classList.toggle('on',p.classList.contains(c)));
+  }
+  document.querySelectorAll('[data-country]').forEach(b=>b.addEventListener('click',()=>{setCountry(b.dataset.country);if(b.classList.contains('cbtn'))document.getElementById('country').scrollIntoView({behavior:'smooth',block:'start'})}));
+  document.querySelectorAll('.libya,.egypt').forEach(p=>p.addEventListener('click',()=>setCountry(p.classList.contains('libya')?'libya':'egypt')));
+  setCountry('libya');
+
+  // Sample Brent series (deterministic) ending at 98.45
+  function series(n,vol,drift,seed){let x=seed,a=[];for(let i=0;i<n;i++){x=(x*9301+49297)%233280;a.push((x/233280-.5)*vol+drift*i)}const end=98.45,s=end-a[n-1];return a.map(v=>+(v+s).toFixed(2))}
+  const R={"1D":{d:series(24,.5,.16,7),lbl:["00:00","12:00","Now"],c:"vs. previous day"},
+           "1W":{d:series(7,2.2,.6,3),lbl:["7 Nov","10 Nov","13 Nov"],c:"vs. 1 week ago"},
+           "1M":{d:series(22,2.4,.32,11),lbl:["14 Oct","29 Oct","13 Nov"],c:"vs. 1 month ago"},
+           "3M":{d:series(64,3,.14,5),lbl:["Aug","Sep","Nov"],c:"vs. 3 months ago"},
+           "1Y":{d:series(52,6,.12,17),lbl:["Nov 25","May 26","Nov 26"],c:"vs. 1 year ago"}};
+  const chart=document.getElementById('chart');
+  function draw(k){
+    const d=R[k].d,min=Math.min(...d),max=Math.max(...d),pad=(max-min)*.15||1,W=400,H=104;
+    const y=v=>6+(H-12)*(1-(v-(min-pad))/((max+pad)-(min-pad))),x=i=>i*(W/(d.length-1));
+    const line=d.map((v,i)=>(i?'L':'M')+x(i).toFixed(1)+' '+y(v).toFixed(1)).join(' ');
+    const up=d[d.length-1]>=d[0],col=up?'var(--up)':'var(--down)';
+    chart.innerHTML='<defs><linearGradient id="gf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+(up?'#178a4c':'#c23b2a')+'" stop-opacity=".22"/><stop offset="1" stop-color="'+(up?'#178a4c':'#c23b2a')+'" stop-opacity="0"/></linearGradient></defs>'+
+      [0.25,.5,.75].map(f=>'<line x1="0" x2="400" y1="'+(H*f)+'" y2="'+(H*f)+'" stroke="var(--line)" stroke-width="1"/>').join('')+
+      '<path d="'+line+' L400 '+H+' L0 '+H+' Z" fill="url(#gf)"/><path d="'+line+'" fill="none" stroke="'+col+'" stroke-width="2" vector-effect="non-scaling-stroke"/>'+
+      '<circle cx="'+x(d.length-1)+'" cy="'+y(d[d.length-1])+'" r="3.5" fill="'+col+'"/>'+
+      R[k].lbl.map((l,i)=>'<text class="ax" x="'+(i==0?2:i==1?200:398)+'" y="118" text-anchor="'+(i==0?'start':i==1?'middle':'end')+'">'+l+'</text>').join('');
+    const pct=k==='1D'?4.09:((d[d.length-1]/d[0]-1)*100);
+    const e=document.getElementById('chg');e.className='chg num '+(pct>=0?'up':'down');e.textContent=(pct>=0?'▲ +':'▼ ')+pct.toFixed(2)+'%';
+    document.getElementById('chgLbl').textContent=R[k].c;
+  }
+  document.querySelectorAll('#ranges button').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('#ranges button').forEach(o=>o.setAttribute('aria-pressed',o===b?'true':'false'));draw(b.textContent)}));
+  draw('1M');
+
+  document.getElementById('fb').addEventListener('submit',e=>{e.preventDefault();document.getElementById('thanks').hidden=false;document.getElementById('fbText').value=''});
+})();
+</script>
+
+</body></html>
