@@ -159,7 +159,7 @@ dl.kv dt{color:var(--muted);font-weight:500}dl.kv dd{margin:0;font-weight:500}
 .lic{display:flex;flex-direction:column;gap:10px}
 .lic article{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:12px;border:1px solid var(--line);border-radius:8px;background:var(--surface-2)}
 .lic h3{font-size:14.5px}.lic p{margin:0;font-size:12.5px;color:var(--muted)}
-.due{font-size:12px;font-weight:600;white-space:nowrap;padding:5px 9px;border-radius:6px;background:var(--surface);border:1px solid var(--line)}
+.due{font-size:12px;font-weight:600;max-width:170px;text-align:center;padding:5px 9px;border-radius:6px;background:var(--surface);border:1px solid var(--line)}
 .due.hot{color:var(--accent-ink);border-color:var(--accent);background:var(--accent-soft)}
 .tbl{overflow-x:auto}
 table{width:100%;border-collapse:collapse;font-size:13px}
@@ -179,7 +179,7 @@ footer a{color:var(--blue)}
 
 @media (max-width:1100px){.r1{grid-template-columns:1fr 1fr}.r1>:first-child{grid-column:1/-1}.r2{grid-template-columns:1fr 1fr}.r2>.stack:last-child{grid-column:1/-1}}
 @media (max-width:860px){.band .wrap{grid-template-columns:1fr}.nav{display:none}}
-@media (max-width:700px){.r1,.r2{grid-template-columns:1fr}.r1>*,.r2>*{grid-column:auto!important}.hud{font-size:10px}}
+@media (max-width:700px){.lic article{grid-template-columns:auto minmax(0,1fr)}.lic .due{grid-column:1/-1;max-width:none;justify-self:start}.r1,.r2{grid-template-columns:1fr}.r1>*,.r2>*{grid-column:auto!important}.hud{font-size:10px}}
 @media (prefers-reduced-motion:reduce){.sweep,.pin::after{animation:none}.sweep{display:none}}
 </style>
 
@@ -191,7 +191,7 @@ footer a{color:var(--blue)}
       <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="17" r="15" fill="none" stroke="#2c4775" stroke-width="1.5"/><circle cx="17" cy="17" r="9" fill="none" stroke="#2c4775" stroke-width="1.5"/><path d="M17 17 L17 2 A15 15 0 0 1 30 10 Z" fill="#4fd1c5" opacity=".35"/><path d="M17 17 L30 10" stroke="#4fd1c5" stroke-width="1.5"/><circle cx="23" cy="12" r="2.4" fill="#e0701f"/></svg>
       <span><b>Upstream Radar</b><small>MENA Upstream Intelligence</small></span>
     </a>
-    <span class="tag">Prototype · sample data</span>
+    <span class="tag">Beta · public sources</span>
     <nav class="nav" aria-label="Sections">
       <a href="#top" aria-current="page">Dashboard</a>
       <a href="#market">Brent</a>
@@ -216,11 +216,7 @@ footer a{color:var(--blue)}
       </div>
       <div class="news">
         <h2><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10 21a2 2 0 0 0 4 0"/></svg>What's new</h2>
-        <ul>
-          <li><span>Egypt extends bid deadline for 14 blocks to 14 Dec 2026</span><time>1 Nov</time></li>
-          <li><span>Libya NOC announces new exploration opportunities</span><time>28 Oct</time></li>
-          <li><span>Brent eases on higher supply outlook (IEA)</span><time>13 Nov</time></li>
-        </ul>
+        <ul id="newsList"></ul>
       </div>
     </div>
 
@@ -242,8 +238,8 @@ footer a{color:var(--blue)}
       </div>
       <div class="rfoot">
       <div class="legend" aria-label="Legend">
-        <span style="--c:#e0701f"><i></i>Bid round · closing &lt; 30 days</span>
-        <span style="--c:#4fd1c5"><i></i>Open acreage</span>
+        <span style="--c:#e0701f"><i></i>Bid round · closing ≤ 30 days</span>
+        <span style="--c:#4fd1c5"><i></i>Open round / acreage</span>
         <span style="--c:#7ea3f5"><i></i>Project / discovery</span>
       </div>
       <div class="card-pop" id="pop" aria-live="polite"></div>
@@ -275,11 +271,7 @@ footer a{color:var(--blue)}
 
       <section class="card" aria-labelledby="kuH">
         <div class="card-h"><h2 id="kuH"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Key updates</h2></div>
-        <ul class="list">
-          <li><span class="chip c-eg">EGYPT</span><span>14-block licensing round, bids due 14 Dec 2026</span><span class="date">1 Nov</span></li>
-          <li><span class="chip c-ly">LIBYA</span><span>NOC invites E&amp;P interest in onshore and offshore blocks</span><span class="date">28 Oct</span></li>
-          <li><span class="chip c-mk">MARKET</span><span>IEA: Q4 supply could exceed demand by ~1.7 mb/d</span><span class="date">13 Nov</span></li>
-        </ul>
+        <ul class="list" id="updList"></ul>
       </section>
     </div>
 
@@ -297,30 +289,19 @@ footer a{color:var(--blue)}
       <div class="stack">
         <section class="card" id="licensing" aria-labelledby="licH">
           <div class="card-h"><h2 id="licH"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 4l6 6-9 9H5v-6z"/></svg>Licensing &amp; auctions</h2><a class="more" href="#licensing">View all ›</a></div>
-          <div class="lic">
-            <article><svg class="flag" viewBox="0 0 24 16" aria-hidden="true"><rect width="24" height="16" fill="#000"/><rect width="24" height="10.67" fill="#fff"/><rect width="24" height="5.33" fill="#ce1126"/><circle cx="12" cy="8" r="1.6" fill="#c09300"/></svg><div><h3>Egypt · 2026 licensing round</h3><p>14 exploration blocks · EGAS &amp; EGPC</p></div><span class="due hot num" id="dueEg">Bids due 14 Dec</span></article>
-            <article><svg class="flag" viewBox="0 0 24 16" aria-hidden="true"><rect width="24" height="16" fill="#239e46"/><rect width="24" height="12" fill="#000"/><rect width="24" height="4" fill="#e70013"/><circle cx="11.6" cy="8" r="2.3" fill="#fff"/><circle cx="12.3" cy="8" r="1.85" fill="#000"/><circle cx="13.6" cy="8" r=".75" fill="#fff"/></svg><div><h3>Libya · exploration opportunities</h3><p>New onshore and offshore areas · NOC</p></div><span class="due">Interest window open</span></article>
-          </div>
+          <div class="lic" id="licList"></div>
         </section>
 
         <section class="card" id="deals" aria-labelledby="maH">
           <div class="card-h"><h2 id="maH"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 7h11l-3-3M17 17H6l3 3"/></svg>M&amp;A / asset transactions</h2><a class="more" href="#deals">View all ›</a></div>
-          <ul class="list">
-            <li><span class="chip c-eg">EGYPT</span><span>Example Energy acquires 25% stake in a Western Desert asset</span><span class="date">10 Nov</span></li>
-            <li><span class="chip c-ly">LIBYA</span><span>Mediterranean Oil agrees farm-in to an offshore block</span><span class="date">29 Oct</span></li>
-            <li><span class="chip c-eg">EGYPT</span><span>Regional E&amp;P in talks to divest non-core assets</span><span class="date">22 Oct</span></li>
-          </ul>
+          <ul class="list" id="dealList"></ul>
         </section>
 
         <section class="card" id="projects" aria-labelledby="prH">
           <div class="card-h"><h2 id="prH"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2l4 20H8z"/><path d="M9 14h6M10 9h4"/></svg>Upstream project tracker</h2><a class="more" href="#projects">View all ›</a></div>
           <div class="tbl"><table>
             <thead><tr><th>Project / field</th><th>Country</th><th>Operator</th><th>Status</th><th>Notes</th></tr></thead>
-            <tbody>
-              <tr><td class="k">Delta gas development</td><td>Egypt</td><td>Sample Co.</td><td><span class="st dev">Development</span></td><td>Phase 1 on track</td></tr>
-              <tr><td class="k">Offshore gas field</td><td>Libya</td><td>NOC JV</td><td><span class="st prod">Producing</span></td><td>Output stable</td></tr>
-              <tr><td class="k">West Med block</td><td>Egypt</td><td>Sample Co.</td><td><span class="st exp">Exploration</span></td><td>Well planned Q1 2027</td></tr>
-            </tbody>
+            <tbody id="projBody"></tbody>
           </table></div>
         </section>
       </div>
@@ -365,34 +346,59 @@ footer a{color:var(--blue)}
 
 <script>
 (function(){
-  const PINS={"sirte":[38.3,38.7],"murzuq":[19.5,58.2],"ghadames":[13.6,32.1],"cyren":[45.9,15.4],"bes":[18.9,14.2],"wdes":[62.3,36.9],"delta":[74,22.3],"suez":[79.3,42.9],"redsea":[85.8,60.5],"medw":[60.3,21]};
-  const SIG=[
-    {k:"delta",c:"#e0701f",t:"Offshore Nile Delta blocks",co:"Egypt",kind:"Bid round",who:"EGAS",when:"Bids due 14 Dec 2026"},
-    {k:"medw",c:"#e0701f",t:"West Mediterranean blocks",co:"Egypt",kind:"Bid round",who:"EGAS",when:"Bids due 14 Dec 2026"},
-    {k:"wdes",c:"#e0701f",t:"Western Desert onshore blocks",co:"Egypt",kind:"Bid round",who:"EGPC",when:"Bids due 14 Dec 2026"},
-    {k:"suez",c:"#7ea3f5",t:"Gulf of Suez redevelopment",co:"Egypt",kind:"Project",who:"Sample Co.",when:"Development"},
-    {k:"redsea",c:"#4fd1c5",t:"Red Sea frontier acreage",co:"Egypt",kind:"Open acreage",who:"Ganope",when:"Data room open"},
-    {k:"sirte",c:"#4fd1c5",t:"Sirte Basin onshore areas",co:"Libya",kind:"Open acreage",who:"NOC",when:"Interest window open"},
-    {k:"ghadames",c:"#4fd1c5",t:"Ghadames Basin areas",co:"Libya",kind:"Open acreage",who:"NOC",when:"Interest window open"},
-    {k:"murzuq",c:"#7ea3f5",t:"Murzuq Basin fields",co:"Libya",kind:"Project",who:"NOC JV",when:"Producing"},
-    {k:"cyren",c:"#4fd1c5",t:"Offshore Cyrenaica blocks",co:"Libya",kind:"Open acreage",who:"NOC",when:"Interest window open"},
-    {k:"bes",c:"#7ea3f5",t:"Offshore gas field",co:"Libya",kind:"Project",who:"NOC JV",when:"Producing"}
-  ];
+  // ---- Data tables (data/*.csv). Edit those files on GitHub; the page reads them on load. ----
+  const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  function parseCSV(text){const rows=[];let row=[],f='',q=false;for(let i=0;i<text.length;i++){const c=text[i];
+      if(q){if(c==='"'){if(text[i+1]==='"'){f+='"';i++}else q=false}else f+=c}
+      else if(c==='"')q=true;else if(c===','){row.push(f);f=''}else if(c==='\n'||c==='\r'){if(c==='\r'&&text[i+1]==='\n')i++;row.push(f);f='';if(row.some(x=>x.trim()!==''))rows.push(row);row=[]}else f+=c}
+    row.push(f);if(row.some(x=>x.trim()!==''))rows.push(row);
+    const h=rows.shift().map(x=>x.trim().toLowerCase());return rows.map(r=>Object.fromEntries(h.map((k,i)=>[k,(r[i]||'').trim()])))}
+  const getCSV=n=>fetch('data/'+n+'.csv',{cache:'no-store'}).then(r=>r.ok?r.text():Promise.reject(r.status)).then(parseCSV).catch(()=>[]);
+  // Map projection: same Mercator as the drawn map (centre 23E 27.4N, scale 1680, 1000x560 box)
+  const RAD=Math.PI/180,K=1680,merc=la=>Math.log(Math.tan(Math.PI/4+la*RAD/2));
+  const toXY=(lat,lon)=>[(500+K*(lon-23)*RAD)/10,(280-K*(merc(lat)-merc(27.4)))/5.6];
+  const MONS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const dshort=s=>{if(!/^\d{4}-\d\d-\d\d$/.test(s))return esc(s);const [Y,M,D]=s.split('-');return (+D)+' '+MONS[+M-1]};
+  const today=new Date(new Date().toISOString().slice(0,10));
+  const daysTo=s=>/^\d{4}-\d\d-\d\d$/.test(s)?Math.round((new Date(s)-today)/864e5):null;
+  const chipCls=c=>({egypt:'c-eg',libya:'c-ly'}[c.toLowerCase()]||'c-mk');
+  const link=u=>u?' <a class="more" href="'+esc(u)+'" target="_blank" rel="noopener" aria-label="Source">↗</a>':'';
+  const FLAG={egypt:'<svg class="flag" viewBox="0 0 24 16" aria-hidden="true"><rect width="24" height="16" fill="#000"/><rect width="24" height="10.67" fill="#fff"/><rect width="24" height="5.33" fill="#ce1126"/><circle cx="12" cy="8" r="1.6" fill="#c09300"/></svg>',libya:'<svg class="flag" viewBox="0 0 24 16" aria-hidden="true"><rect width="24" height="16" fill="#239e46"/><rect width="24" height="12" fill="#000"/><rect width="24" height="4" fill="#e70013"/><circle cx="11.6" cy="8" r="2.3" fill="#fff"/><circle cx="12.3" cy="8" r="1.85" fill="#000"/><circle cx="13.6" cy="8" r=".75" fill="#fff"/></svg>'};
+  const C_HOT='#e0701f',C_OPEN='#4fd1c5',C_PROJ='#7ea3f5';
   const pinsEl=document.getElementById('pins'),pop=document.getElementById('pop');
-  SIG.forEach((s,i)=>{
-    const b=document.createElement('button');
-    b.className='pin';b.style.left=PINS[s.k][0]+'%';b.style.top=PINS[s.k][1]+'%';
-    b.style.setProperty('--c',s.c);b.style.setProperty('--d',(i*0.37%2.4).toFixed(2)+'s');
-    b.setAttribute('aria-label',s.t+', '+s.co);b.setAttribute('aria-pressed','false');
-    b.onclick=()=>select(i);pinsEl.appendChild(b);
-  });
+  let SIG=[];
   function select(i){
-    const s=SIG[i];
+    const s=SIG[i];if(!s)return;
     pinsEl.querySelectorAll('.pin').forEach((p,j)=>p.setAttribute('aria-pressed',j===i?'true':'false'));
-    pop.innerHTML='<span class="eyebrow" style="color:'+s.c+'">'+s.kind+' · '+s.co+'</span><b>'+s.t+'</b><span class="meta">Sample signal · tap a dot to inspect</span>'+
-      '<div class="row"><span>Authority / operator</span><span>'+s.who+'</span></div><div class="row"><span>Status</span><span>'+s.when+'</span></div>';
+    pop.innerHTML='<span class="eyebrow" style="color:'+s.c+'">'+esc(s.kind)+' · '+esc(s.co)+'</span><b>'+esc(s.t)+'</b>'+
+      '<span class="meta">Map position is approximate'+(s.src?' · <a href="'+esc(s.src)+'" target="_blank" rel="noopener" style="color:var(--scan)">source ↗</a>':'')+'</span>'+
+      '<div class="row"><span>Authority / operator</span><span>'+esc(s.who)+'</span></div><div class="row"><span>Status</span><span>'+esc(s.when)+'</span></div>';
   }
-  select(0);
+  function drawPins(){
+    pinsEl.innerHTML='';
+    SIG.forEach((s,i)=>{const [x,y]=toXY(s.lat,s.lon);if(!(x>=0&&x<=100&&y>=0&&y<=100))return;
+      const b=document.createElement('button');b.className='pin';b.style.left=x.toFixed(1)+'%';b.style.top=y.toFixed(1)+'%';
+      b.style.setProperty('--c',s.c);b.style.setProperty('--d',(i*0.37%2.4).toFixed(2)+'s');
+      b.setAttribute('aria-label',s.t+', '+s.co);b.setAttribute('aria-pressed','false');b.onclick=()=>select(i);pinsEl.appendChild(b)});
+    document.getElementById('hudCount').textContent=SIG.length+' SIGNALS';
+    select(0);
+  }
+  Promise.all(['updates','signals','deals','projects'].map(getCSV)).then(([upd,sig,deals,proj])=>{
+    upd.sort((a,b)=>b.date.localeCompare(a.date));deals.sort((a,b)=>b.date.localeCompare(a.date));
+    const news=upd.concat(deals.map(d=>Object.assign({},d,{headline:d.headline}))).sort((a,b)=>b.date.localeCompare(a.date)).slice(0,3);
+    document.getElementById('newsList').innerHTML=news.map(n=>'<li><span>'+esc(n.headline)+(n.source_url?' <a href="'+esc(n.source_url)+'" target="_blank" rel="noopener" style="color:var(--scan);text-decoration:none" aria-label="Source">↗</a>':'')+'</span><time>'+dshort(n.date)+'</time></li>').join('')||'<li><span>No updates yet</span></li>';
+    document.getElementById('updList').innerHTML=upd.slice(0,4).map(u=>'<li><span class="chip '+chipCls(u.country)+'">'+esc(u.country.toUpperCase())+'</span><span>'+esc(u.headline)+link(u.source_url)+'</span><span class="date">'+dshort(u.date)+'</span></li>').join('');
+    const lic=sig.filter(s=>s.type.toLowerCase()!=='project').sort((a,b)=>(a.deadline||'9999').localeCompare(b.deadline||'9999'));
+    document.getElementById('licList').innerHTML=lic.slice(0,5).map(s=>{const d=daysTo(s.deadline),hot=d!==null&&d>=0&&d<=30;
+      const due=d===null?esc(s.status):(d<0?'Closed '+dshort(s.deadline):'Bids due '+dshort(s.deadline)+'<br>'+d+' days left');
+      return '<article>'+(FLAG[s.country.toLowerCase()]||'')+'<div><h3>'+esc(s.name)+'</h3><p>'+esc(s.country)+' · '+esc(s.authority)+link(s.source_url)+'</p></div><span class="due'+(hot?' hot':'')+' num">'+due+'</span></article>'}).join('');
+    document.getElementById('dealList').innerHTML=deals.slice(0,4).map(d=>'<li><span class="chip '+chipCls(d.country)+'">'+esc(d.country.toUpperCase())+'</span><span>'+esc(d.headline)+' <span class="src">· '+esc(d.status)+'</span>'+link(d.source_url)+'</span><span class="date">'+dshort(d.date)+'</span></li>').join('');
+    const stCls=s=>{s=s.toLowerCase();return s.includes('produc')?'prod':s.includes('explor')?'exp':'dev'};
+    document.getElementById('projBody').innerHTML=proj.map(p=>'<tr><td class="k">'+esc(p.project)+link(p.source_url)+'</td><td>'+esc(p.country)+'</td><td>'+esc(p.operator)+'</td><td><span class="st '+stCls(p.status)+'">'+esc(p.status)+'</span></td><td>'+esc(p.notes)+(p.verified.toLowerCase()==='yes'?'':' <span class="due" style="padding:1px 6px;font-size:11px">to verify</span>')+'</td></tr>').join('');
+    SIG=lic.map(s=>{const d=daysTo(s.deadline);return {t:s.name,co:s.country,kind:s.type,who:s.authority,when:s.deadline?(s.status+' · due '+dshort(s.deadline)+' '+s.deadline.slice(0,4)):s.status,src:s.source_url,lat:+s.lat,lon:+s.lon,c:(d!==null&&d>=0&&d<=30)?C_HOT:C_OPEN}})
+      .concat(proj.filter(p=>p.lat&&p.lon).map(p=>({t:p.project,co:p.country,kind:'Project',who:p.operator,when:p.status,src:p.source_url,lat:+p.lat,lon:+p.lon,c:C_PROJ})));
+    drawPins();
+  });
 
   const COUNTRY={
     libya:[["Contract regime","EPSA (Exploration & Production Sharing Agreement)"],["Royalty","Typically 0–12%, field and terms specific"],["Petroleum tax","~20% plus applicable levies"],["Cost recovery","Yes, subject to a cap (e.g. 50–70%)"],["Profit split","Sliding scale (e.g. contractor 20–49%)"],["NOC participation","Commonly 0–25%, negotiable"],["Licensing authority","National Oil Corporation (NOC)"]],
