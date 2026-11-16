@@ -87,7 +87,7 @@ def check_numbers(text, facts):
 def ask_claude(api_key, facts):
     body = json.dumps({
         "model": MODEL,
-        "max_tokens": 400,
+        "max_tokens": 4000,
         "system": SYSTEM_PROMPT,
         "messages": [{"role": "user", "content": "Facts:\n" + facts}],
     }).encode()
@@ -102,7 +102,11 @@ def ask_claude(api_key, facts):
     )
     with urllib.request.urlopen(req, timeout=60) as resp:
         out = json.load(resp)
-    return "".join(b.get("text", "") for b in out["content"] if b.get("type") == "text").strip()
+    text = "".join(b.get("text", "") for b in out.get("content", []) if b.get("type") == "text").strip()
+    if not text:
+        kinds = [b.get("type") for b in out.get("content", [])]
+        print(f"Empty reply from Claude. stop_reason={out.get('stop_reason')}, content types={kinds}")
+    return text
 
 
 def main():
@@ -112,6 +116,9 @@ def main():
     facts, as_of = build_facts()
     for attempt in (1, 2):
         text = ask_claude(api_key, facts)
+        if len(text) < 40:
+            print(f"Attempt {attempt}: reply too short or empty, trying again")
+            continue
         bad = check_numbers(text, facts)
         if not bad:
             break
