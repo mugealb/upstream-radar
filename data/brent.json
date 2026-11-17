@@ -1,7 +1,7 @@
 {
  "source": "U.S. Energy Information Administration (EIA), series RBRTE",
  "unit": "USD per barrel",
- "fetched_at": "2026-11-16T07:42:49Z",
+ "fetched_at": "2026-11-17T06:20:09Z",
  "series": [
   {
    "date": "2024-07-03",
