@@ -1,28 +1,8 @@
 {
  "source": "U.S. Energy Information Administration (EIA), series RBRTE",
  "unit": "USD per barrel",
- "fetched_at": "2026-11-27T07:44:29Z",
+ "fetched_at": "2026-11-28T07:37:32Z",
  "series": [
-  {
-   "date": "2024-07-09",
-   "value": 86.48
-  },
-  {
-   "date": "2024-07-10",
-   "value": 86.55
-  },
-  {
-   "date": "2024-07-11",
-   "value": 86.49
-  },
-  {
-   "date": "2024-07-12",
-   "value": 87.35
-  },
-  {
-   "date": "2024-07-15",
-   "value": 86.42
-  },
   {
    "date": "2024-07-16",
    "value": 86.6
@@ -2402,6 +2382,26 @@
   {
    "date": "2026-11-17",
    "value": 92.94
+  },
+  {
+   "date": "2026-11-18",
+   "value": 92.88
+  },
+  {
+   "date": "2026-11-19",
+   "value": 95.17
+  },
+  {
+   "date": "2026-11-20",
+   "value": 92.76
+  },
+  {
+   "date": "2026-11-23",
+   "value": 91.2
+  },
+  {
+   "date": "2026-11-24",
+   "value": 91.8
   }
  ]
 }
